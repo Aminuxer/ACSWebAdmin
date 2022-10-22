@@ -1,6 +1,6 @@
 # ACSWebAdmin
 
-<img src="https://img.icons8.com/emoji/24/000000/united-kingdom-emoji.png"/> [English readme](https://github.com/Aminuxer/ACSWebAdmin/blob/main/Readme.en.md)
+<img src="https://img.icons8.com/emoji/24/000000/united-kingdom-emoji.png"/> [English readme](https://github.com/Aminuxer/ACSWebAdmin/blob/main/README.en.md)
 
 Серверная веб-система для управления несколькими СКУД-контроллерами Z5RWeb. 
 
