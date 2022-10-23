@@ -21,7 +21,7 @@ if ( isset($_SESSION['user']) AND $_SESSION['user'] != '' AND $_SESSION['control
         $out .= '<META HTTP-EQUIV="Refresh" CONTENT="0; URL='.$_SERVER['PHP_SELF'].'?">';
      } elseif ($tab == 'converter') {   // Converer accesible to any logged users;
                $out =  '<h3>'.$loc_options_value.':</h3>';
-          $sk = isset ($_POST['sk']) ? addslashes(htmlspecialchars($_POST['sk'])) : '';
+          $sk = isset ($_POST['sk']) ? mysqli_real_escape_string($conn, $_POST['sk']) : '';
           $tz = isset ($_POST['tz']) ? (int)($_POST['tz']) : 0;
 
           $out .=  '<form method="POST"> <Br/>
@@ -38,10 +38,10 @@ if ( isset($_SESSION['user']) AND $_SESSION['user'] != '' AND $_SESSION['control
                        else { $acc = tz_to_accstr ($tz); }
           $out .= "TZ $tz = $loc_property_name_access $acc<Br/>";
      }
-     $logged_user = $_SESSION['user'];   // Need for another logic and display logged username
+     $logged_user = mysqli_real_escape_string($conn, $_SESSION['user']);   // Need for another logic and display logged username
 } else {
      /* Login FORM for unauthorised */
-          $u = isset($_POST['f_user']) ? $_POST['f_user'] : '';
+          $u = isset($_POST['f_user']) ? mysqli_real_escape_string($conn, $_POST['f_user']) : '';
           $p = isset($_POST['f_pswd']) ? $_POST['f_pswd'] : '';
           if ( $u != '' ) {
               $lst = check_password_db($u, $p);
@@ -268,8 +268,8 @@ ORDER BY of.name, uk.user");
      case 'add_new_office' :
           if ($user_info['allow_manage_offices'] == 1) {
                $out =  "<h3>$loc_common_phrase_add $loc_entity_name_office</h3>";
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
-               $naddr = isset ($_POST['naddr']) ? addslashes(htmlspecialchars($_POST['naddr'])) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
+               $naddr = isset ($_POST['naddr']) ? mysqli_real_escape_string($conn, $_POST['naddr']) : '';
                if ( isset($_POST['nname']) and $nname != '' ) {
                     $q2 = mysqli_query($conn, "INSERT INTO offices (`name`, `address`) VALUES ('$nname', '$naddr' ) ") or print mysqli_error($conn);
                     print '<META HTTP-EQUIV="REFRESH" CONTENT="0;URL=?tab=offices">';
@@ -288,8 +288,8 @@ ORDER BY of.name, uk.user");
           if ($user_info['allow_manage_offices'] == 1) {
                $out =  "<h3>$loc_common_phrase_edit $loc_entity_name_office</h3>";
                $id = isset ($_GET['id']) ? (int)$_GET['id'] : 0;
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
-               $naddr = isset ($_POST['naddr']) ? addslashes(htmlspecialchars($_POST['naddr'])) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
+               $naddr = isset ($_POST['naddr']) ? mysqli_real_escape_string($conn, $_POST['naddr']) : '';
 
                if ( isset($_POST['nname']) and $nname != '' ) {
                          mysqli_query($conn, "UPDATE `offices` SET `name` = '$nname', `address` = '$naddr' WHERE `id` = '$id' LIMIT 1") or print mysqli_error($conn);
@@ -334,13 +334,13 @@ ORDER BY of.name, uk.user");
      case 'add_controller' :
           $out =  "<h3>$loc_common_phrase_add $loc_entity_name_controller</h3>";
           if ($user_info['allow_manage_controllers'] == 1) {
-               $nsn = isset ($_POST['nsn']) ? addslashes(htmlspecialchars($_POST['nsn'])) : '';
-               $ntype = isset ($_POST['ntype']) ? addslashes(htmlspecialchars($_POST['ntype'])) : '';
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
+               $nsn = isset ($_POST['nsn']) ? mysqli_real_escape_string($conn, $_POST['nsn']) : '';
+               $ntype = isset ($_POST['ntype']) ? mysqli_real_escape_string($conn, $_POST['ntype']) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
                
-               $nhwlogin = isset ($_POST['nhwlogin']) ? addslashes(htmlspecialchars($_POST['nhwlogin'])) : '';
+               $nhwlogin = isset ($_POST['nhwlogin']) ? mysqli_real_escape_string($conn, $_POST['nhwlogin']) : '';
                $nhwpswd = isset ($_POST['nhwpswd']) ? sha1($_POST['nhwpswd']) : '';
-               $niprange = isset ($_POST['niprange']) ? addslashes(htmlspecialchars($_POST['niprange'])) : '';
+               $niprange = isset ($_POST['niprange']) ? mysqli_real_escape_string($conn, $_POST['niprange']) : '';
                if ( isset($_POST['nname']) AND $nname != '' AND $nsn != '' AND $ntype != '') {
                     $office_id = isset ($_POST['noffice']) ? (int)$_POST['noffice'] : '';
                     if ( $office_id == '' or $office_id == 0 ) { $office_id = 'NULL'; }
@@ -365,12 +365,12 @@ ORDER BY of.name, uk.user");
 
      case 'edit_controller' :
           if ($user_info['allow_manage_controllers'] == 1) {
-               $sn = addslashes(htmlspecialchars($_GET['sn']));
-               $hw_type = addslashes(htmlspecialchars($_GET['hw_type']));
+               $sn = mysqli_real_escape_string($conn, $_GET['sn']);
+               $hw_type = mysqli_real_escape_string($conn, $_GET['hw_type']);
                $out =  "<h3>$loc_common_phrase_edit $loc_entity_name_controller $loc_common_phrase_hw: $hw_type $loc_common_phrase_sn: $sn</h3>";
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
-               $nhwlogin = isset ($_POST['nhwlogin']) ? addslashes(htmlspecialchars($_POST['nhwlogin'])) : '';
-               $niprange = isset ($_POST['niprange']) ? addslashes(htmlspecialchars($_POST['niprange'])) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
+               $nhwlogin = isset ($_POST['nhwlogin']) ? mysqli_real_escape_string($conn, $_POST['nhwlogin']) : '';
+               $niprange = isset ($_POST['niprange']) ? mysqli_real_escape_string($conn, $_POST['niprange']) : '';
                if ( isset($_POST['nname']) and $nname != '' ) {
                     $office_id = isset ($_POST['noffice']) ? (int)$_POST['noffice'] : '';
                     if ( $office_id == '' or $office_id == 0 ) { $office_id = 'NULL'; }
@@ -419,10 +419,10 @@ ORDER BY of.name, uk.user");
 
      case 'del_controller' :
           if ($user_info['allow_manage_controllers'] == 1) {
-               $sn = addslashes(htmlspecialchars($_GET['sn']));
-               $hw_type = addslashes(htmlspecialchars($_GET['hw_type']));
+               $sn = mysqli_real_escape_string($conn, $_GET['sn']);
+               $hw_type = mysqli_real_escape_string($conn, $_GET['hw_type']);
                $out =  "<h3>$loc_common_phrase_del $loc_entity_name_controller $loc_common_phrase_hw: $hw_type $loc_common_phrase_sn: $sn</h3>";
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
                if ( isset($_POST['nname']) and $nname != '' ) {
                          mysqli_query($conn, "DELETE FROM events WHERE `sn` = '$sn' AND `hw_type` = '$hw_type' ") or print mysqli_error($conn);
                          mysqli_query($conn, "DELETE FROM proxy_events WHERE `sn` = '$sn' AND `hw_type` = '$hw_type' ") or print mysqli_error($conn);
@@ -460,8 +460,8 @@ ORDER BY of.name, uk.user");
 
 
      case 'list_events' :
-          $sn = addslashes($_GET['sn']);
-          $hw = addslashes($_GET['hw_type']);
+          $sn = mysqli_real_escape_string($conn, $_GET['sn']);
+          $hw = mysqli_real_escape_string($conn, $_GET['hw_type']);
           $q0 = mysqli_query($conn, "SELECT cn.name AS controller_name, of.name AS office_name, cn.hw_type
              FROM `controller_names` cn
              LEFT JOIN offices of ON of.id = cn.office_id
@@ -500,8 +500,8 @@ ORDER BY of.name, uk.user");
           elseif ( $user_info['allow_manage_controllers'] == 0 ) { $out = "$loc_menu_element_controllers :: $loc_common_phrase_edit :: $loc_common_phrase_disabled_user_profile"; }
           elseif ( $user_info['allow_manage_keys'] == 0 ) { $out = "$loc_menu_element_keys :: $loc_common_phrase_edit :: $loc_common_phrase_disabled_user_profile"; }
           else {
-               $sn = addslashes($_GET['sn']);
-               $hw = addslashes($_GET['hw_type']);
+               $sn = mysqli_real_escape_string($conn, $_GET['sn']);
+               $hw = mysqli_real_escape_string($conn, $_GET['hw_type']);
                $q0 = mysqli_query($conn, "SELECT cn.name AS controller_name, of.name AS office_name, cn.hw_type
                FROM `controller_names` cn
                LEFT JOIN offices of ON of.id = cn.office_id
@@ -544,8 +544,8 @@ ORDER BY of.name, uk.user");
           elseif ( $user_info['allow_manage_keys'] == 0 ) { $out = "$loc_menu_element_keys :: $loc_common_phrase_edit :: $loc_common_phrase_disabled_user_profile"; } 
           else {
                  if ( isset($_POST['new_username']) ) {
-                      $new_username  = addslashes($_POST['new_username']);
-                      $new_comment   = addslashes($_POST['new_comment']);
+                      $new_username  = mysqli_real_escape_string($conn, $_POST['new_username']);
+                      $new_comment   = mysqli_real_escape_string($conn, $_POST['new_comment']);
                       $new_office_id = (int)$_POST['new_office_id'];
                       if ( $new_office_id == 0 )  { $new_office_id = 'NULL'; }
                       $new_tz = (int)$_POST['new_tz'];
@@ -572,7 +572,7 @@ ORDER BY of.name, uk.user");
           break;
 
      case 'enroll_key' :
-          $user_id = addslashes($_GET['user_id']);
+          $user_id = (int)$_GET['user_id'];
           if (  check_ip_acl($remote_ip, $opts_restrict_enroll_keys_ips) == 0 ) { $out = "$loc_menu_element_keys :: $loc_common_phrase_enroll :: $loc_common_phrase_disabled_global_options"; }
           elseif (  $user_info['allow_enroll_keys'] == 0 ) { $out = "$loc_menu_element_keys :: $loc_common_phrase_enroll :: $loc_common_phrase_disabled_user_profile"; }
           else {
@@ -595,7 +595,7 @@ ORDER BY of.name, uk.user");
 
 
      case 'del_key' :
-          $user_id = addslashes($_GET['user_id']);
+          $user_id = (int)$_GET['user_id'];
           if ( $mgmt_keys == 0 ) { $out = "$loc_menu_element_keys :: $loc_common_phrase_del :: $loc_common_phrase_disabled_global_options"; }
           elseif ( $user_info['allow_manage_keys'] == 0 ) { $out = "$loc_menu_element_keys :: $loc_common_phrase_del :: $loc_common_phrase_disabled_user_profile"; }
           else {
@@ -617,7 +617,7 @@ ORDER BY of.name, uk.user");
 
 
      case 'del_key_db' :
-          $user_id = addslashes($_GET['user_id']);
+          $user_id = (int)$_GET['user_id'];
           if ( $mgmt_keys == 0 ) { $out = "$loc_menu_element_keys :: $loc_common_phrase_del :: $loc_common_phrase_disabled_global_options"; }
           elseif ( $user_info['allow_manage_keys'] == 0 ) { $out = "$loc_menu_element_keys :: $loc_common_phrase_del :: $loc_common_phrase_disabled_user_profile"; }
           else {
@@ -637,7 +637,7 @@ ORDER BY of.name, uk.user");
           break;
 
      case 'open_door' :
-          $sn = addslashes($_GET['sn']);
+          $sn = mysqli_real_escape_string($conn, $_GET['sn']);
           if (  check_ip_acl($remote_ip, $opts_restrict_open_door_ips) == 0 ) { $out = "$loc_common_phrase_ip_not_allowed :: $loc_common_phrase_disabled_global_options"; } else {
 
           $out = "<h3>$loc_susbys_open_door</h3>
@@ -710,7 +710,7 @@ window.onload = function() {
      case 'add_new_login' :
           if ($user_info['allow_manage_logins'] == 1) {
                $out =  "<h3>$loc_common_phrase_add $loc_common_phrase_username</h3>";
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
                if ( isset($_POST['nname']) and $nname != '' ) {
                     $q2 = mysqli_query($conn, "INSERT INTO logins (`user`, `password_sha256`, `created_ts`, `last_changed_password_ts`, `enable`)
                         VALUES ('$nname', '', NOW(), NOW(), '1' ) ") or print mysqli_error($conn);
@@ -730,12 +730,12 @@ window.onload = function() {
           if ($user_info['allow_manage_logins'] == 1) {
                $id = (int)$_GET['login_id'];
                $out =  "<h3>$loc_common_phrase_edit $loc_common_phrase_username #$id</h3>";
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
-               $nemail = isset ($_POST['nemail']) ? addslashes(htmlspecialchars($_POST['nemail'])) : '';
-               $ncomm = isset ($_POST['ncomm']) ? addslashes(htmlspecialchars($_POST['ncomm'])) : '';
-               $twofac = isset ($_POST['f_twofac']) ? addslashes(htmlspecialchars($_POST['f_twofac'])) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
+               $nemail = isset ($_POST['nemail']) ? mysqli_real_escape_string($conn, $_POST['nemail']) : '';
+               $ncomm = isset ($_POST['ncomm']) ? mysqli_real_escape_string($conn, $_POST['ncomm']) : '';
+               $twofac = isset ($_POST['f_twofac']) ? mysqli_real_escape_string($conn, $_POST['f_twofac']) : '';
                  if ($twofac == 'none') { $twofac = ''; }
-               $allipr = isset ($_POST['f_allowed_ip_range']) ? addslashes(htmlspecialchars($_POST['f_allowed_ip_range'])) : '';
+               $allipr = isset ($_POST['f_allowed_ip_range']) ? mysqli_real_escape_string($conn, $_POST['f_allowed_ip_range']) : '';
                
                if ( isset($_POST['nname']) and $nname != '' ) {
                     $subsql = '';
@@ -837,8 +837,8 @@ window.onload = function() {
      case 'add_badkey' :
           if ($user_info['allow_manage_badkeys'] == 1) {
                $out =  "<h3>$loc_common_phrase_add $loc_entity_name_badkey</h3>";
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
-               $ncode = isset ($_POST['ncode']) ? addslashes(htmlspecialchars($_POST['ncode'])) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
+               $ncode = isset ($_POST['ncode']) ? mysqli_real_escape_string($conn, $_POST['ncode']) : '';
                if ( isset($_POST['ncode']) and $ncode != '' ) {
                     $hex = pure_hex_2_mixed_hex_marine($ncode);
                     $q2 = mysqli_query($conn, "INSERT INTO bad_keys (`card`, `card_hex`, `description`, `active`) VALUES ('$ncode', '$hex', '$nname', '1' ) ") or print mysqli_error($conn);
@@ -856,9 +856,9 @@ window.onload = function() {
 
      case 'edit_badkey' :
           if ($user_info['allow_manage_badkeys'] == 1) {
-               $id = isset ($_GET['id']) ? addslashes($_GET['id']) : '';
-               $ncode = isset ($_POST['ncode']) ? addslashes(htmlspecialchars($_POST['ncode'])) : '';
-               $ndesc = isset ($_POST['ndesc']) ? addslashes(htmlspecialchars($_POST['ndesc'])) : '';
+               $id = isset ($_GET['id']) ? mysqli_real_escape_string($conn, $_GET['id']) : '';
+               $ncode = isset ($_POST['ncode']) ? mysqli_real_escape_string($conn, $_POST['ncode']) : '';
+               $ndesc = isset ($_POST['ndesc']) ? mysqli_real_escape_string($conn, $_POST['ndesc']) : '';
 
                if ( isset($_POST['ncode']) and $ncode != '' ) {
                          if ( isset ($_POST['nenab']) AND $_POST['nenab'] == 'on') { $enable = 1; } else { $enable = 0; };
@@ -886,7 +886,7 @@ window.onload = function() {
      case 'del_badkey' :
           if ($user_info['allow_manage_badkeys'] == 1) {
                $out =  "<h3>$loc_common_phrase_del $loc_entity_name_badkey</h3>";
-               $id = addslashes($_GET['id']);
+               $id = (int)$_GET['id'];
                if ( isset($_POST['nname']) and $_POST['nname'] != '' ) {
                     try {
                          $q2 = mysqli_query($conn, "DELETE FROM `bad_keys` WHERE `card` = '$id' LIMIT 1") or print mysqli_error($conn);
@@ -918,7 +918,7 @@ window.onload = function() {
                          if ( $row["type"] == 'i' ) { $cu_value = (int) $cu_value ; }
                          if ( $cu_value != $row["value"] ) {
                                    $cx++;
-                                   $cu_value = addslashes ($cu_value);
+                                   $cu_value = mysqli_real_escape_string ($conn, $cu_value);
                                    $upd_query = "UPDATE options SET `value` = '$cu_value' WHERE `id` = '".$row["id"]."' LIMIT 1";
                                    mysqli_query ( $conn, $upd_query );
                          }
@@ -989,18 +989,18 @@ window.onload = function() {
      case 'add_new_proxy_event' :
           $out =  "<h3>$loc_common_phrase_add $loc_entity_name_proxyevent</h3>";
           if ($user_info['allow_manage_proxy_events'] == 1) {
-               $nsn = isset ($_POST['nsn']) ? addslashes(htmlspecialchars($_POST['nsn'])) : '';
-               $ntype = isset ($_POST['ntype']) ? addslashes(htmlspecialchars($_POST['ntype'])) : '';
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
-               $ncode = isset ($_POST['ncode']) ? $_POST['ncode'] : '';
+               $nsn = isset ($_POST['nsn']) ? mysqli_real_escape_string($conn, $_POST['nsn']) : '';
+               $ntype = isset ($_POST['ntype']) ? mysqli_real_escape_string($conn, $_POST['ntype']) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
+               $ncode = isset ($_POST['ncode']) ? mysqli_real_escape_string($conn, $_POST['ncode']) : '';
 
                if ( isset($_POST['nsn']) AND $nsn != '' AND $ncode != '' AND $ntype != '') {
                     $nenable = isset ($_POST['nenable']) ? $_POST['nenable'] : '';
                     if ( $nenable == 'on' ) { $nenable = '1'; } else { $nenable = '0'; }
-                    $nurl = isset ($_POST['nurl']) ? $_POST['nurl'] : '';
-                    $nmethod = isset ($_POST['nmethod']) ? $_POST['nmethod'] : '';
-                    $nbody = isset ($_POST['nbody']) ? $_POST['nbody'] : '';
-                    $ncontenttype = isset ($_POST['ncontenttype']) ? $_POST['ncontenttype'] : '';
+                    $nurl = isset ($_POST['nurl']) ? mysqli_real_escape_string($conn, $_POST['nurl']) : '';
+                    $nmethod = isset ($_POST['nmethod']) ? mysqli_real_escape_string($conn, $_POST['nmethod']) : '';
+                    $nbody = isset ($_POST['nbody']) ? mysqli_real_escape_string($conn, $_POST['nbody']) : '';
+                    $ncontenttype = isset ($_POST['ncontenttype']) ? mysqli_real_escape_string($conn, $_POST['ncontenttype']) : '';
                     $q2 = mysqli_query($conn, "INSERT INTO `proxy_events` (`sn`, `hw_type`, `enable`, `event_code`, `comment`, `target_url`, `target_method`, `target_raw_body`, `target_content_type`, `created`)
                     VALUES ('$nsn', '$ntype', '$nenable', $ncode, '$nname', '$nurl', '$nmethod', '$nbody', '$ncontenttype', NOW())") or print mysqli_error($conn);
                     print '<META HTTP-EQUIV="REFRESH" CONTENT="0;URL=?tab=proxy_events">';
@@ -1028,18 +1028,18 @@ window.onload = function() {
           $out =  "<h3>$loc_common_phrase_edit $loc_entity_name_proxyevent</h3>";
           $proxy_id = (int)$_GET['proxy_id'];
           if ($user_info['allow_manage_proxy_events'] == 1) {
-               $nsn = isset ($_POST['nsn']) ? addslashes(htmlspecialchars($_POST['nsn'])) : '';
-               $ntype = isset ($_POST['ntype']) ? addslashes(htmlspecialchars($_POST['ntype'])) : '';
-               $nname = isset ($_POST['nname']) ? addslashes(htmlspecialchars($_POST['nname'])) : '';
-               $ncode = isset ($_POST['ncode']) ? $_POST['ncode'] : '';
+               $nsn = isset ($_POST['nsn']) ? mysqli_real_escape_string($conn, $_POST['nsn']) : '';
+               $ntype = isset ($_POST['ntype']) ? mysqli_real_escape_string($conn, $_POST['ntype']) : '';
+               $nname = isset ($_POST['nname']) ? mysqli_real_escape_string($conn, $_POST['nname']) : '';
+               $ncode = isset ($_POST['ncode']) ? mysqli_real_escape_string($conn, $_POST['ncode']) : '';
 
                if ( isset($_POST['nsn']) AND $nsn != '' AND $ncode != '' AND $ntype != '') {
                     $nenable = isset ($_POST['nenable']) ? $_POST['nenable'] : '';
                     if ( $nenable == 'on' ) { $nenable = '1'; } else { $nenable = '0'; };
-                    $nurl = isset ($_POST['nurl']) ? $_POST['nurl'] : '';
-                    $nmethod = isset ($_POST['nmethod']) ? $_POST['nmethod'] : '';
-                    $nbody = isset ($_POST['nbody']) ? $_POST['nbody'] : '';
-                    $ncontenttype = isset ($_POST['ncontenttype']) ? $_POST['ncontenttype'] : '';
+                    $nurl = isset ($_POST['nurl']) ? mysqli_real_escape_string($conn, $_POST['nurl']) : '';
+                    $nmethod = isset ($_POST['nmethod']) ? mysqli_real_escape_string($conn, $_POST['nmethod']) : '';
+                    $nbody = isset ($_POST['nbody']) ? mysqli_real_escape_string($conn, $_POST['nbody']) : '';
+                    $ncontenttype = isset ($_POST['ncontenttype']) ? mysqli_real_escape_string($conn, $_POST['ncontenttype']) : '';
                     $q2 = mysqli_query($conn, "UPDATE `proxy_events` SET `sn` = '$nsn', `hw_type` = '$ntype', `enable` = '$nenable',
                               `event_code` = '$ncode', `comment` = '$nname', `target_url` = '$nurl', `target_method` = '$nmethod',
                               `target_raw_body` = '$nbody', `target_content_type` = '$ncontenttype' WHERE id = '$proxy_id' LIMIT 1") or print mysqli_error($conn);
@@ -1069,7 +1069,7 @@ window.onload = function() {
           $out =  "<h3>$loc_common_phrase_del $loc_entity_name_proxyevent</h3>";
           $proxy_id = (int)$_GET['proxy_id'];
           if ($user_info['allow_manage_proxy_events'] == 1) {
-               $nsn = isset ($_POST['nsn']) ? addslashes(htmlspecialchars($_POST['nsn'])) : '';
+               $nsn = isset ($_POST['nsn']) ? mysqli_real_escape_string($conn, $_POST['nsn']) : '';
                if ( isset($_POST['nsn']) AND $nsn != '' ) {
                     $q2 = mysqli_query($conn, "DELETE FROM `proxy_events` WHERE id = '$proxy_id' LIMIT 1") or print mysqli_error($conn);
                     print '<META HTTP-EQUIV="REFRESH" CONTENT="0;URL=?tab=proxy_events">';
@@ -1122,14 +1122,14 @@ window.onload = function() {
                               }
                               if ( $opts_allow_profile_edit_iprange == 1 AND $_POST['f_iprange'] != $user_info['allowed_ip_range'] ) {
                                    print "$loc_common_phrase_edit $loc_susbys_src_ip_bind ...";
-                                   $q .= "`allowed_ip_range` = '".addslashes($_POST['f_iprange'])."',";
+                                   $q .= "`allowed_ip_range` = '".mysqli_real_escape_string($conn, $_POST['f_iprange'])."',";
                               }
                               if ( $opts_allow_profile_edit_email == 1 AND $_POST['f_email'] != $user_info['email'] ) {
                                    print "$loc_common_phrase_edit $loc_common_phrase_email_address ...";
-                                   $q .= "`email` = '".addslashes($_POST['f_email'])."',";
+                                   $q .= "`email` = '".mysqli_real_escape_string($conn, $_POST['f_email'])."',";
                               }
                               if ( $opts_allow_profile_edit_comment == 1 AND $_POST['f_comment'] != $user_info['comment'] ) {
-                                   $q .= "`comment` = '".addslashes($_POST['f_comment'])."',";
+                                   $q .= "`comment` = '".mysqli_real_escape_string($conn, $_POST['f_comment'])."',";
                               }
                               if ( $q != '' ) {
                                         $q = substr($q, 0, -1);
@@ -1231,7 +1231,7 @@ window.onload = function() {
                     if ( isset($_POST['f_sign']) and $_POST['f_sign'] != '' ) {
                          $bitcoinECDSA = new BitcoinECDSA();
                          $bitcoinECDSA->generateRandomPrivateKey();
-                         $wallet = isset ($_POST['f_wallet']) ? addslashes($_POST['f_wallet']) : '';
+                         $wallet = isset ($_POST['f_wallet']) ? mysqli_real_escape_string($conn, $_POST['f_wallet']) : '';
                          if ( check_password_db($logged_user, $_POST['f_password'])[0] != 0 ) {
                              $out .= "$loc_common_phrase_error: $loc_common_phrase_password";
                          }

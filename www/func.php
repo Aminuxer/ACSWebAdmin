@@ -2,7 +2,7 @@
 
 session_start();
 $remote_ip = $_SERVER['REMOTE_ADDR'];
-$opts__int__sys__version = 'v.2022-10-04.007';
+$opts__int__sys__version = 'v.2022-10-23.002';
 $conn = mysqli_connect($db_host, $db_user, $db_pswd, $db_name);
 
 $z5r_reftype = array ('Z5RWEB');
@@ -187,7 +187,7 @@ function check_password_db($login,$password) {
   global $conn;
   global $remote_ip;
   $code = 255; $status = 'UNAUTHORIZED';
-  $login = addslashes($login);
+  $login = mysqli_real_escape_string($conn, $login);
   $a = mysqli_query($conn, "SELECT * FROM `logins` WHERE `user` = '$login' LIMIT 1");
   if ( mysqli_num_rows($a) == 0 ) { $code = -1; $status = 'NO user'; }
   else {

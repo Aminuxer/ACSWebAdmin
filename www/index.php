@@ -19,8 +19,8 @@ $ret_code = $ret_text = $ret_json = $debug_str = $cu_operation = '';
 $json = json_decode($raw_post_data, true);
    if ( json_last_error() == 0 ) {
      if ($debug >= 2) { $debug_str .= '1-JSON. '.print_r($json, true); };
-     $hw_type = $json['type'];
-     $sn = $json['sn'];
+     $hw_type = mysqli_real_escape_string($conn, $json['type']);
+          $sn = mysqli_real_escape_string($conn, $json['sn']);
      if ( !in_array($hw_type, $z5r_reftype) ) { $ret_code = 0; $ret_text = 'BAD HW-TYPE'; }
      else {   // Start correct HW-Type message parsing
 
@@ -30,7 +30,7 @@ $json = json_decode($raw_post_data, true);
         $rex = mysqli_fetch_array($existing);
 
         if ( $num_rex_rows > 0 AND $rex['allowed_ip_range'] != '' AND check_ip_acl($remote_ip, $rex['allowed_ip_range']) == 0 ) {   # Existing controller from untrusted IP
-             $ret_code = 6; $ret_text = 'Error: IP '.$_SERVER['REMOTE_ADDR'].' denied for this controller. Edit controller allowed IP subnet';
+             $ret_code = 6; $ret_text = 'Error: IP '.$remote_ip.' denied for this controller. Edit controller allowed IP subnet';
         }
         elseif ( $num_rex_rows == 0 AND $opts_allow_autoreg_controllers == 1 )  {   # Auto reg new controller
              mysqli_query($conn, "INSERT INTO `controller_names` (`sn`, `hw_type`) VALUES ('$sn', '$hw_type')");
@@ -49,7 +49,7 @@ $json = json_decode($raw_post_data, true);
           foreach ( $msgs as $index => $msg ) {  $msg_arr_count++;
 
             $cu_operation = isset ($msg['operation']) ? $msg['operation'] : '';
-            $cu_id = isset ($msg['id']) ? $msg['id'] : '';
+            $cu_id = isset ($msg['id']) ? mysqli_real_escape_string($conn, $msg['id']) : '';
             
             if ( $cu_operation == 'events' ) { $events_array = $msg['events']; }
 
@@ -84,10 +84,10 @@ $json = json_decode($raw_post_data, true);
                   $evnt_cnt = 0;
                   foreach ($evts as $event) {
                         $q0 = $q1 = '';
-                        $event_time = $event['time'];
-                        $event_code = $event['event'];
+                        $event_time = mysqli_real_escape_string($conn, $event['time']);
+                        $event_code = mysqli_real_escape_string($conn, $event['event']);
                         if ($debug >= 2 ) { $debug_str .= "\n".'2-EVENT. '.print_r($event, true); };
-                              $emmarine_code = pure_hex_2_mixed_hex_marine($event['card']);
+                              $emmarine_code = mysqli_real_escape_string ($conn, pure_hex_2_mixed_hex_marine($event['card']) );
                               if ( $emmarine_code != '' ) {
                                  mysqli_query($conn, "REPLACE INTO `last_activity_keys` (`key`, `controller_hw_type`, `controller_sn`, `datetime`, `status_code`)
                                                 VALUES ('$emmarine_code', '$hw_type', '$sn', '$event_time', '$event_code')");
@@ -139,7 +139,7 @@ $json = json_decode($raw_post_data, true);
                         if ($q0 != '') { mysqli_query($conn, $q0); };
 
                         $q1 = "INSERT IGNORE INTO `events` (`event_code`, `sn`, `hw_type`, `src_ip`, `card_hex`, `card`, `ts`, `flag`, `internal_id`)
-                                             VALUES ('$event_code', '$sn', '$hw_type', INET_ATON('$remote_ip'), '".$event['card']."', '$emmarine_code', '$event_time', '".$event['flag']."', '".$cu_id."');";
+                                             VALUES ('$event_code', '$sn', '$hw_type', INET_ATON('$remote_ip'), '".mysqli_real_escape_string($conn, $event['card'])."', '$emmarine_code', '$event_time', '".mysqli_real_escape_string($conn, $event['flag'])."', '".$cu_id."');";
                         if ($debug >= 2) { $debug_str .= "\n3.1-SQL. $q1"; };
                         mysqli_query($conn, $q1);
                         $event_code_last_id = mysqli_insert_id($conn);
@@ -149,12 +149,14 @@ $json = json_decode($raw_post_data, true);
                                          AND `sn` = '$sn' AND `hw_type` = '$hw_type' ";
                         if ($debug >= 1) { $debug_str .= "\n3.2-EventsProxy-SQL. $q2"; };
                         $qq2 = mysqli_query($conn, $q2);
-                        while ( $ev = mysqli_fetch_array($qq2) ) {
+                        while ( $ev = mysqli_fetch_array($qq2) ) {       #   Start events processing
                            if ($debug >= 1) { $debug_str .= "\n3.2.1-ProxyEvent-iD ".$ev['id'].", Code $event_code, SN $sn, HW $hw_type,
                                send ".$ev['target_method']." to ".$ev['target_url']; };
+
                                if ($ev['target_method'] == 'POST-RAW' or $ev['target_method'] == 'PUT-RAW') {
                                   $proxy_body = $ev['target_raw_body'];
                                } else { $proxy_body = ''; }
+
                            $f_url = $ev['target_url'];
                            if ( preg_match( '/LOGIN|OFFICE/', $f_url) ) {  /* if need extra-data - fetch this from DB */
                                 $extra1 = mysqli_query($conn, "SELECT uk.type AS key_type, uk.access as access, uk.user AS login, uk.comment, uk.photo_url, uk.office_id, of.name AS offce_name, of.address AS office_address FROM `user_keys` uk
@@ -173,8 +175,46 @@ $json = json_decode($raw_post_data, true);
                            $f_url = str_replace('[DATETIME]', $event_time, $f_url);
                            $f_url = str_replace('[IP]', $remote_ip, $f_url);
 
+                           $params_string = parse_url($f_url, PHP_URL_QUERY);
+                           parse_str($params_string, $params_array);
 
-                        }
+                           $http_curl = curl_init();
+                           curl_setopt($http_curl, CURLOPT_URL, $f_url);
+                           curl_setopt($http_curl, CURLOPT_VERBOSE, $debug);
+                           curl_setopt($http_curl, CURLOPT_PORT , parse_url($f_url, PHP_URL_PORT) );
+
+                           if ( parse_url ($f_url, PHP_URL_SCHEME) == 'https' ) {
+                              curl_setopt($http_curl, CURLOPT_SSL_VERIFYPEER, 0);
+                           }
+
+                           if ( $ev['target_content_type'] != '' ) {
+                              curl_setopt($f_url, CURLOPT_HTTPHEADER, array('Content-type:'.$ev['target_content_type']) );
+                           }
+
+                           if ($ev['target_method'] == 'POST-RAW' or $ev['target_method'] == 'POST-PARAMS') {
+                              curl_setopt($http_curl, CURLOPT_POST, 1);
+                              if ( $ev['target_method'] == 'POST-PARAMS' ) {
+                                    curl_setopt($http_curl, CURLOPT_POSTFIELDS, $params_array);
+                              }
+                           }
+
+                           if ($ev['target_method'] == 'PUT-RAW' or $ev['target_method'] == 'PUT-PARAMS') {
+                              curl_setopt($http_curl, CURLOPT_RETURNTRANSFER, true);
+                              curl_setopt($http_curl, CURLOPT_CUSTOMREQUEST, "PUT");
+                              curl_setopt($http_curl, CURLOPT_POSTFIELDS, http_build_query($params_array));
+                           }
+
+                           $http_data = curl_exec($http_curl);
+                           if ($debug > 0) {
+                              if ( ! curl_errno($http_curl) ) {
+                                    $http_info = curl_getinfo($http_curl);
+                                    $debug_str .= '3.2.2 -curl- Took '.$http_info['total_time'].' seconds to send a request to '.$http_info['url'];
+                              } else {
+                                    $debug_str .= '3.2.2 -curl- error: ' . curl_error($http_curl);
+                              }
+                           }
+
+                        }       #   End events processing
                         /* END EVENT PROXIFY */
 
                         $evnt_cnt++;

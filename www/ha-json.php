@@ -57,7 +57,7 @@ if ( ( isset($_SESSION['twofactor_required']) AND $_SESSION['twofactor_required'
 
 
 if ( $mode == 'last-state' ) {
-    $sn = isset($_GET['sn']) ? (int)$_GET['sn'] : 0;
+    $sn = isset($_GET['sn']) ? mysqli_real_escape_string($conn, $_GET['sn']) : 0;
     $q1 = mysqli_query($conn, "SELECT ls.sn, ls.hw_type, ls.last_activity, ls.last_access_card_ts, ls.last_deny_card_ts, ls.last_deny_card_number,
         ls.last_button_open_ts, ls.last_network_open_ts,
         uk_ok.n, uk_ok.user AS allowed_user, uk_ok.comment AS allowed_comment,
@@ -98,8 +98,8 @@ if ( $mode == 'last-state' ) {
 
 
 if ( $mode == 'event-user' ) {
-    $sn   = isset($_GET['sn']) ? (int)$_GET['sn'] : 0;
-    $user = isset($_GET['user']) ? addslashes($_GET['user']) : 0;
+    $sn   = isset($_GET['sn']) ? mysqli_real_escape_string($conn, $_GET['sn']) : 0;
+    $user = isset($_GET['user']) ? mysqli_real_escape_string($conn, $_GET['user']) : 0;
     $q1 = mysqli_query($conn, "SELECT ls.sn, uk.n, uk.user, uk.comment, uk.create_date,
    (SELECT ts FROM events e1 WHERE e1.card = uk.key AND e1.event_code = 4 AND e1.sn = ls.sn ORDER BY e1.ts DESC LIMIT 1) AS last_success_ts,
    (SELECT ts FROM events e2 WHERE e2.card = uk.key AND e2.event_code = 6 AND e2.sn = ls.sn ORDER BY e2.ts DESC LIMIT 1) AS last_denied_ts
@@ -125,9 +125,9 @@ if ( $mode == 'event-user' ) {
 
 
 if ( $mode == 'queue-command' ) {
-    $sn   = isset($_GET['sn']) ? (int)$_GET['sn'] : 0;
-    $cmd  = isset($_GET['cmd']) ? addslashes($_GET['cmd']) : 0;
-    $user = isset($_GET['user']) ? addslashes($_GET['user']) : 0;
+    $sn   = isset($_GET['sn']) ? mysqli_real_escape_string($conn, $_GET['sn']) : 0;
+    $cmd  = isset($_GET['cmd']) ? mysqli_real_escape_string($conn, $_GET['cmd']) : 0;
+    $user = isset($_GET['user']) ? mysqli_real_escape_string($conn, $_GET['user']) : 0;
 
     $ret_json = '{ "code": 1, "err": "No command" }';
     $q0 = mysqli_query($conn, "SELECT sn FROM last_state WHERE sn = '$sn' LIMIT 1");
@@ -135,10 +135,13 @@ if ( $mode == 'queue-command' ) {
 
     $q00 = mysqli_query($conn, "SELECT `n`, `key`, `type` FROM `user_keys` WHERE `user` = '$user' LIMIT 1") or print mysqli_error($conn);
     $q00_numrows = mysqli_num_rows($q00);
-    if ($q00_numrows > 0) { $ud00 = mysqli_fetch_assoc($q00); $user_n = $ud00['n']; $user_key = $ud00['key']; $user_type = $ud00['type']; }
+    if ($q00_numrows > 0) { $ud00 = mysqli_fetch_assoc($q00);
+            $user_n = $ud00['n'];
+            $user_key = mysqli_real_escape_string($conn, $ud00['key']);
+            $user_type = $ud00['type']; }
 
     if ( $cmd == 'open-door' ) {
-            $pswd = isset($_GET['pswd']) ? addslashes($_GET['pswd']) : '';
+            $pswd = isset($_GET['pswd']) ? mysqli_real_escape_string($conn, $_GET['pswd']) : '';
             if ( check_ip_acl($ip, $opts_restrict_open_door_ips) == 0 ) { $ret_json = '{ "code": 2, "err": "Error: IP '.$ip.' not allow to open door."}'; }
             elseif ( $q0_numrows == 0 ) { $ret_json = '{ "code": 3, "err": "No controller with this SN number" }'; } 
             else {
@@ -159,7 +162,7 @@ if ( $mode == 'queue-command' ) {
             elseif ( $user_info['allow_manage_keys'] == 0 ) { $ret_json = '{ "code": 5, "err": "username - not allowed for add key" }'; }
             elseif ( $q0_numrows == 0 ) { $ret_json = '{ "code": 3, "err": "No controller with this SN number" }'; } 
             else {
-                        $newkey = isset($_GET['newkey']) ? addslashes($_GET['newkey']) : 0;
+                        $newkey = isset($_GET['newkey']) ? mysqli_real_escape_string($conn, $_GET['newkey']) : 0;
                         $q01 = mysqli_query($conn, "SELECT `n`, `key` FROM `user_keys` WHERE `key` = '$newkey' LIMIT 1") or print mysqli_error($conn);
                         $q03 = mysqli_query($conn, "SELECT `description` FROM `bad_keys` WHERE `card` = '$newkey' LIMIT 1") or print mysqli_error($conn);
                         if ( mysqli_num_rows($q01) > 0 ) { $ret_json = '{ "code": 5, "err": "This key already binded to another user" }'; }
