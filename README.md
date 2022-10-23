@@ -3,7 +3,12 @@
 <img src="https://img.icons8.com/emoji/24/000000/united-kingdom-emoji.png"/> [English readme](https://github.com/Aminuxer/ACSWebAdmin/blob/main/README.en.md)
 
 Серверная веб-система для управления несколькими СКУД-контроллерами Z5RWeb.
-Статус: beta.  Всё основное работает, но есть недоделки в дизайне . вспомогательных функциях.
+
+Статус: beta.
+
+Всё основное работает, но есть недоделки в дизайне . вспомогательных функциях.
+
+![ACSWebAdmin](https://user-images.githubusercontent.com/13812192/197417577-d8f43de0-e44c-4c1f-a1cb-e3614cf18826.png)
 
 ## Возможности
 * неограниченное число ключей
