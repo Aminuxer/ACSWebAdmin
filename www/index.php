@@ -208,7 +208,7 @@ $json = json_decode($raw_post_data, true);
                               curl_setopt($http_curl, CURLOPT_POSTFIELDS, http_build_query($params_array));
                            }
 
-                           # $http_data = curl_exec($http_curl);
+                           $http_data = curl_exec($http_curl);
                            if ($debug > 0) {
                               if ( ! curl_errno($http_curl) ) {
                                     $http_info = curl_getinfo($http_curl);
