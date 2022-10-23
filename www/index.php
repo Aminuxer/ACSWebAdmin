@@ -182,6 +182,10 @@ $json = json_decode($raw_post_data, true);
                            curl_setopt($http_curl, CURLOPT_URL, $f_url);
                            curl_setopt($http_curl, CURLOPT_VERBOSE, $debug);
                            curl_setopt($http_curl, CURLOPT_PORT , parse_url($f_url, PHP_URL_PORT) );
+                           curl_setopt($http_curl, CURLOPT_RETURNTRANSFER, true);
+                           curl_setopt($http_curl, CURLOPT_FOLLOWLOCATION, true);
+                           curl_setopt($http_curl, CURLOPT_CONNECTTIMEOUT, 20);
+                           curl_setopt($http_curl, CURLOPT_TIMEOUT, 40);
 
                            if ( parse_url ($f_url, PHP_URL_SCHEME) == 'https' ) {
                               curl_setopt($http_curl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -204,7 +208,7 @@ $json = json_decode($raw_post_data, true);
                               curl_setopt($http_curl, CURLOPT_POSTFIELDS, http_build_query($params_array));
                            }
 
-                           $http_data = curl_exec($http_curl);
+                           # $http_data = curl_exec($http_curl);
                            if ($debug > 0) {
                               if ( ! curl_errno($http_curl) ) {
                                     $http_info = curl_getinfo($http_curl);
@@ -234,7 +238,7 @@ $json = json_decode($raw_post_data, true);
    } else { $ret_code = 4; $ret_text = 'BAD REQUEST JSON"'; };
 
 if ($ret_json == '') { $ret_json = '{ "success":'.$ret_code.', "err": "'.$ret_text.'"}'; };
-print $ret_json;
+print "$ret_json\n";
 
 if ( $debug > 0 ) {
      $str = "\n\n---==={ $remote_ip       ".date("Y-m-d H:i:s")." } \n";
