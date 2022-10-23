@@ -50,7 +50,7 @@ $json = json_decode($raw_post_data, true);
 
             $cu_operation = isset ($msg['operation']) ? $msg['operation'] : '';
             $cu_id = isset ($msg['id']) ? mysqli_real_escape_string($conn, $msg['id']) : '';
-            
+
             if ( $cu_operation == 'events' ) { $events_array = $msg['events']; }
 
             if ($debug >= 2) { $debug_str .= "\n foreach step: $msg_arr_count ; CU_ID: $cu_id ; foreach-index: $index"; }
@@ -248,7 +248,7 @@ if ( $debug > 0 ) {
      $str .= "-debug-->$debug_str<--/debug-";
 
 
-    # if ( $debug < 2 and $cu_operation == 'ping' and $ret_code == 0 ) { die; }
+     if ( $debug < 2 and $cu_operation == 'ping' and $ret_code == 0 ) { die; }
      $fh = fopen($debug_log, "a");
            fwrite($fh, $str);
            fclose($fh);
