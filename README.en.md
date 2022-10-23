@@ -20,6 +20,7 @@ Main functions work, but some design and functions issue can occur.
 * Two-factor authentication (TOTP, Email, Bitcoin)
 * HTTP-JSON API
 * ACS controllers can work throught NAT
+* Multilanguage (russian, english)
 
 ## Install and system requirements
 * Prepare minimal web-server with PHP and MySQL support.
