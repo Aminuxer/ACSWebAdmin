@@ -142,8 +142,15 @@ This software allow different users has different access levels.
   - View web-server logs. Exceptions and 5xx errors must do not appear.
 
 * Where worktime reports ?
-  - Not need for me. But your can proxify events "Input/output by key" to another web-server with parameters and collect data by another system.
-  - Some reports can be added at future versions
+  - Some simple reports added, including presence/outage in office.
+  - Per-minute report not need for me. But your can proxify events "Input/output by key" to another web-server with parameters and collect data by another system. Or create new report manually.
+
+* How to add new custom report ?
+  - lets naming this as myreport1
+  - add records about this in reports/index.php -- $reports_array
+  - create new file in /reports : myreport1.php using any existing file.
+  - in /localization/* add new strings like $loc_reports_myreport1 = '...'; with name on different languages
+  - Pull-requests with new reports are welcome.
 
 * I need new option.
   - Button [Fork].
