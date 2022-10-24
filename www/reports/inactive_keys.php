@@ -10,7 +10,7 @@
   } else {
     $date1 = mysqli_real_escape_string($conn, $_GET['date1']);
 
-    $out .= " .. $date1";
+    $out .= htmlspecialchars(" .. $date1");
 
     $q = mysqli_query($conn, "SELECT
    uk.user, uk.comment, of.name AS office_name, of.address AS office_address ,
@@ -37,5 +37,6 @@ WHERE
                     <td style="background-color:'.$r['severity_color'].'">'.$r['status_code'].' '.htmlspecialchars($r['event_name'])
                      .'&nbsp;&nbsp;&nbsp;'.htmlspecialchars($r['last_office']).' '.htmlspecialchars($r['last_device_name']).'</td> </tr>';
      }
+     $out .= '</table>';
   }
 ?>

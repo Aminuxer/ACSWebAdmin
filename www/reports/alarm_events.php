@@ -14,7 +14,7 @@
     $date2 = mysqli_real_escape_string($conn, $_GET['date2']);
     $office = (int)$_GET['office'];
 
-    $out .= "$date1 .. $date2";
+    $out .= htmlspecialchars("$date1 .. $date2");
 
     if ( $office != 0 ) { $office_filter = " AND cn.office_id = '$office' "; } else { $office_filter = ''; };
   $q = mysqli_query($conn, "SELECT
@@ -43,6 +43,7 @@ ORDER BY of.name, uk.user");
                   <td>'.htmlspecialchars($r['comment']).'</td>
                   <td>'.htmlspecialchars($r['event_name']).'</td> </tr>';
   }
+  $out .= '</table>';
 }
 
 ?>

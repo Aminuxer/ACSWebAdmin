@@ -29,6 +29,7 @@
   $loc_opts_email_recovery_use_captcha = 'Require captcha at password recovery via email';
 
   $loc_reports_presence_in_office = 'Presence report';
+  $loc_reports_presence_in_office_per_days = 'Presence report per days';
   $loc_reports_outage_in_office = 'Outage report';
   $loc_reports_inactive_keys = 'Inactive keys report';
   $loc_reports_alarm_events = 'Alarm events report';

@@ -29,6 +29,7 @@
   $loc_opts_email_recovery_use_captcha = 'Требовать капчу при восстановления паролей по email';
 
   $loc_reports_presence_in_office = 'Отчёт по присутствию';
+  $loc_reports_presence_in_office_per_days = 'Отчёт по присутствию по дням';
   $loc_reports_outage_in_office = 'Отчёт по отсутствию';
   $loc_reports_inactive_keys = 'Отчёт по неактивным ключам';
   $loc_reports_alarm_events = 'Отчёт по тревожным событиям';

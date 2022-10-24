@@ -6,6 +6,7 @@
 
  $reports_array = array(
     "presence_in_office",
+    "presence_in_office_per_days",
     "outage_in_office",
     "inactive_keys",
     "alarm_events"
