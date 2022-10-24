@@ -25,9 +25,9 @@ $fluctuation_amplitude = 8;
 
 #noise
 //$white_noise_density=0; // no white noise
-$white_noise_density=1/6;
+$white_noise_density=1/5;
 //$black_noise_density=0; // no black noise
-$black_noise_density=1/30;
+$black_noise_density=1/31;
 
 # increase safety by prevention of spaces between symbols
 $no_spaces = true;
@@ -43,5 +43,5 @@ $foreground_color = array(mt_rand(0,80), mt_rand(0,80), mt_rand(0,80));
 $background_color = array(mt_rand(220,255), mt_rand(220,255), mt_rand(220,255));
 
 # JPEG quality of CAPTCHA image (bigger is better quality, but larger file size)
-$jpeg_quality = 90;
+$jpeg_quality = 80;
 ?>
