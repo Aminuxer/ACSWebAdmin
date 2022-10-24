@@ -35,7 +35,7 @@ WHERE
                     <td>'.htmlspecialchars($r['user']).'</td> <td>'.htmlspecialchars($r['comment']).'</td>
                     <td>'.htmlspecialchars($r['last_activity']).'</td>
                     <td style="background-color:'.$r['severity_color'].'">'.$r['status_code'].' '.htmlspecialchars($r['event_name'])
-                     '&nbsp;&nbsp;&nbsp;'.htmlspecialchars($r['last_office']).' '.htmlspecialchars($r['last_device_name']).'</td> </tr>';
+                     .'&nbsp;&nbsp;&nbsp;'.htmlspecialchars($r['last_office']).' '.htmlspecialchars($r['last_device_name']).'</td> </tr>';
      }
   }
 ?>
