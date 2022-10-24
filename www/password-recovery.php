@@ -28,10 +28,12 @@ if ( $step == 0 ) {
       $user = isset($_GET['user']) ? $_GET['user'] : '';
       print "<form method=\"POST\" action=\"?step=1\" id=\"password_recovery_form_1\">
             <table>
-              <tr> <th>$loc_common_phrase_username</th>        <td> <input type=\"text\" name=\"f_user\" value=\"".htmlspecialchars($user)."\"> </td>
-                   <td rowspan=\"3\"> <input type=\"submit\" value=\"$loc_common_phrase_send\"> </td> </tr>
-              <tr> <th>$loc_common_phrase_email_address</th>   <td> <input type=\"text\" name=\"f_mail\"> </td> </tr>
-              <tr> <td> <img src=\"kcaptcha/?".session_name()."=".session_id()."\" alt=\"Captcha\"> </td> <td> <input type=\"text\" name=\"f_captcha\"> </tr>
+              <tr> <th>$loc_common_phrase_username</th> <td> <input type=\"text\" name=\"f_user\" value=\"".htmlspecialchars($user)."\"> </td> </tr>
+              <tr> <th>$loc_common_phrase_email_address</th>   <td> <input type=\"text\" name=\"f_mail\"> </td> </tr>";
+              if ( $opts_email_recovery_use_captcha == 1 ) {
+                 print "<tr> <td> <img src=\"kcaptcha/?".session_name()."=".session_id()."\" alt=\"Captcha\"> </td>
+                             <td> <input type=\"text\" name=\"f_captcha\"> </tr>"; };
+              print "<tr> <td colspan=\"2\"> <input type=\"submit\" value=\"$loc_common_phrase_send\"> </td> </tr>
             </table>
             <input type=\"hidden\" name=\"f_hash0\" value=\"$step_0_ref_hash\">
         </form>";
@@ -43,12 +45,12 @@ elseif ( $step == 1 ) {
       $back_link = "<a href=\"?step=0&user=".htmlspecialchars($user)."\">$loc_susbys_email_pswd_recovery</a>"; 
       if ( $user == '' or $mail == '' ) {
            print "<span class=\"red\">$loc_common_phrase_username / $loc_common_phrase_email_address $loc_common_phrase_must_be_filled</span>$back_link"; }
-      elseif( isset($_SESSION['captcha_keystring']) && $_SESSION['captcha_keystring'] != $_POST['f_captcha']){
+      elseif ( $opts_email_recovery_use_captcha == 1 && isset($_SESSION['captcha_keystring']) && $_SESSION['captcha_keystring'] != $_POST['f_captcha'] ) {
 		echo "$loc_common_phrase_error :: captcha";
 	  }
       elseif ( $hash0 != $step_0_ref_hash ) { print "$loc_common_phrase_error : HASH-0 $loc_common_phrase_not_active; $loc_susbys_email_pswd_recovery_bad_hash"; }
       else {
-              unset($_SESSION['captcha_keystring']);
+              if ($opts_email_recovery_use_captcha == 1) { $_SESSION['captcha_keystring'] = generate_random_password(32); };
               $q1 = mysqli_query($conn, "SELECT user, email, enable, allowed_ip_range,
                     SHA1( CONCAT (password_sha256, last_changed_password_ts, created_ts, salt2, allowed_ip_range, comment)) AS password_sha
                     FROM logins WHERE `user` = '".mysqli_real_escape_string($conn, $user)."' AND `email` = '".mysqli_real_escape_string($conn, $mail)."' AND `enable` = '1' LIMIT 1");
