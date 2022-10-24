@@ -36,6 +36,7 @@
   $loc_menu_element_options = 'Options';
   $loc_menu_element_converter = 'Converter';
   $loc_menu_element_profile = 'Your profile';
+  $loc_menu_element_reports = 'Reports';
 
   $loc_susbys_greeting = 'Welcome !';
   $loc_susbys_email_pswd_recovery = 'E-Mail password recovery';

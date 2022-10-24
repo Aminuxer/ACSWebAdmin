@@ -527,13 +527,56 @@ ORDER BY of.name, uk.user");
           else {
                     $out =  "<h3>$loc_common_phrase_add $loc_entity_name_key:</h3>$loc_susbys_addkeys_help1";
 
-          $out .=  '<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="add-key">
+          $out .=  "<script type=\"text/javascript\">
+window.onload = function() {
+   document.getElementById('actionButton').style.display = 'block';
+};
+
+	function showBlock(element) {
+	        data = '';
+                el = document.getElementById(element);
+                el.style.display = 'block';
+                var xmlHttp = new XMLHttpRequest();
+
+                var selector_sn = document.getElementsByName('sn');
+                var sn = selector_sn[0].value;
+
+                var input_newkey = document.getElementsByName('newkey');
+                var newkey = input_newkey[0].value;
+
+                var input_user = document.getElementsByName('user');
+                var user = input_user[0].value;
+                if ( sn == '' || newkey == '' ) {
+                     el.textContent = '$loc_entity_name_controller - $loc_common_phrase_must_be_filled';
+                } else {
+                let qs = `ha-json.php?mode=queue-command&cmd=add-key&sn=\${sn}&newkey=\${newkey}&user=\${user}`;
+                console.log(qs);
+                xmlHttp.open('GET', qs, true);
+                xmlHttp.send(null);
+                xmlHttp.onreadystatechange = function() {
+                      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                      data = xmlHttp.responseText;
+                      if ( data != '' ) {
+                         json1 =  JSON.parse(data)
+                         el.textContent = json1['err'];
+                         console.log(json1['err'])
+                         if ( json1['code'] == 0 ) {
+                              el.textContent = json1['msg'];
+                             console.log('back...');
+                             setTimeout(() => { window.location.href = \"?tab=keys\"; }, 3600);
+                         }
+                      }
+                  }
+                }
+	    }
+	</script>".'<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="add-key">
  '.$loc_property_name_code.'         : <input type=text name="newkey" pattern="^[0-9A-F]{4},[0-9]{3},[0-9]{5}$"  placeholder="XXXX,ddd,ddddd"> <Br/>
  '.$loc_common_phrase_sn.' : '.create_controller_select('sn', '').' <Br/>
- '.$loc_common_phrase_username.': <input type=text name="login"> <Br/>
-       <input type="submit" value="'.$loc_common_phrase_add.' '.$loc_entity_name_key.'">
+ '.$loc_common_phrase_username.': <input type="text" name="user"> <Br/>
+       <input id="actionButton" type="button" value="'.$loc_common_phrase_add.' '.$loc_entity_name_key.'" onclick="showBlock(\'myShowBlock\')" style="display: none;" >
+       <noscript><input type="submit" value="'.$loc_common_phrase_add.' '.$loc_entity_name_key.'-NO-JS"></noscript>
           </form><Br/><Br/>
-          <pre>';
+          </pre>          <div class="js_window1" id="myShowBlock" style="display: none;"></div>';
           };
           break;
 
@@ -564,6 +607,7 @@ ORDER BY of.name, uk.user");
    '.$loc_entity_name_office.' : '.create_office_select('new_office_id', $r['office_id']).'
    '.$loc_property_name_access.' : <input type=text name="new_tz" value="'.$r['access'].'"> '.tz_to_accstr($r['access'], 1).'
    /* 255 - '.$loc_common_phrase_always.'; 0 - '.$loc_common_phrase_never.'; 1-127 - '.$loc_susbys_addkeys_tzhelp1.'; */
+   '.$loc_property_name_created.' : '.$r['create_date'].'
 
      <input type="submit" value="'.$loc_common_phrase_save.' '.$loc_entity_name_key.'">
           </form><Br/><Br/>
@@ -581,14 +625,56 @@ ORDER BY of.name, uk.user");
           $r = mysqli_fetch_assoc($q1);
           $out = "<h3>$loc_common_phrase_enroll $loc_entity_name_key $user_id</h3>";
 
-          $out .=  '<pre><form method="GET" action="ha-json.php">  <input type="hidden" name="mode" value="queue-command">  <input type="hidden" name="cmd" value="change-key">
+          $out .=  "<script type=\"text/javascript\">
+window.onload = function() {
+   document.getElementById('actionButton').style.display = 'block';
+};
+
+	function showBlock(element) {
+	        data = '';
+                el = document.getElementById(element);
+                el.style.display = 'block';
+                var xmlHttp = new XMLHttpRequest();
+
+                var selector_sn = document.getElementsByName('sn');
+                var sn = selector_sn[0].value;
+
+                var input_tz = document.getElementsByName('tz');
+                var tz = input_tz[0].value;
+
+                var input_user = document.getElementsByName('user');
+                var user = input_user[0].value;
+                if ( sn == '' || tz == '' ) {
+                     el.textContent = '$loc_entity_name_controller - $loc_common_phrase_must_be_filled';
+                } else {
+                let qs = `ha-json.php?mode=queue-command&cmd=change-key&sn=\${sn}&tz=\${tz}&user=\${user}`;
+                console.log(qs);
+                xmlHttp.open('GET', qs, true);
+                xmlHttp.send(null);
+                xmlHttp.onreadystatechange = function() {
+                      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                      data = xmlHttp.responseText;
+                      if ( data != '' ) {
+                         json1 =  JSON.parse(data)
+                         el.textContent = json1['err'];
+                         console.log(json1['err'])
+                         if ( json1['code'] == 0 ) {
+                              el.textContent = json1['msg'];
+                             console.log('back...');
+                             setTimeout(() => { window.location.href = \"?tab=enroll_key&user_id=$user_id\"; }, 3600);
+                         }
+                      }
+                  }
+                }
+	    }
+	</script>".'<pre><form method="GET" action="ha-json.php">  <input type="hidden" name="mode" value="queue-command">  <input type="hidden" name="cmd" value="change-key">
    '.$loc_entity_name_key.'  : <input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly>    /* '.htmlspecialchars($r['comment']).' */
    '.$loc_common_phrase_sn.'   : '.create_controller_select('sn', '').'   /* Controller serial number */
    '.$loc_property_name_access.'   : <input type=text name="tz" value="'.$r['access'].'">   /* 255 full access; 0 no access; 1-127 time-regions bitmask; Current access: '.tz_to_accstr($r['access'], 1).' */
-
-     <input type="submit" value="'.$loc_common_phrase_enroll.' '.$loc_entity_name_key.'/'.$loc_property_name_access.'">
+       <input id="actionButton" type="button" value="'.$loc_common_phrase_enroll.' '.$loc_entity_name_key.'/'.$loc_property_name_access.'" onclick="showBlock(\'myShowBlock\')" style="display: none;" >
+     <noscript><input type="submit" value="'.$loc_common_phrase_enroll.' '.$loc_entity_name_key.'/'.$loc_property_name_access.'-NO-JS"></noscript>
           </form><Br/><Br/>
-          </pre>'.$loc_susbys_addkeys_tzhelp1.': <Br/>
+          </pre><div class="js_window1" id="myShowBlock" style="display: none;"></div>'.$loc_susbys_addkeys_tzhelp1.': <Br/>
 <img src="rasp.png" alt="TZ" />';
           }
           break;
@@ -604,14 +690,54 @@ ORDER BY of.name, uk.user");
           $r = mysqli_fetch_assoc($q1);
           $out = "<h3>$loc_common_phrase_del $loc_entity_name_key $user_id @ $loc_entity_name_controller</h3>".$r['key'];
 
-          $out .=  '<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="del-key">
+          $out .=  "<script type=\"text/javascript\">
+window.onload = function() {
+   document.getElementById('actionButton').style.display = 'block';
+};
+
+	function showBlock(element) {
+	        data = '';
+                el = document.getElementById(element);
+                el.style.display = 'block';
+                var xmlHttp = new XMLHttpRequest();
+
+                var selector_sn = document.getElementsByName('sn');
+                var sn = selector_sn[0].value;
+
+                var input_user = document.getElementsByName('user');
+                var user = input_user[0].value;
+                if ( sn == '' ) {
+                     el.textContent = '$loc_entity_name_controller - $loc_common_phrase_must_be_filled';
+                } else {
+                let qs = `ha-json.php?mode=queue-command&cmd=del-key&sn=\${sn}&user=\${user}`;
+                console.log(qs);
+                xmlHttp.open('GET', qs, true);
+                xmlHttp.send(null);
+                xmlHttp.onreadystatechange = function() {
+                      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                      data = xmlHttp.responseText;
+                      if ( data != '' ) {
+                         json1 =  JSON.parse(data)
+                         el.textContent = json1['err'];
+                         console.log(json1['err'])
+                         if ( json1['code'] == 0 ) {
+                              el.textContent = json1['msg'];
+                             console.log('back...');
+                             setTimeout(() => { window.location.href = \"?tab=keys\"; }, 3600);
+                         }
+                      }
+                  }
+                }
+	    }
+	</script>".'<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="del-key">
    '.$loc_entity_name_key.'  : <input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly>  /* '.htmlspecialchars($r['comment']).' */
    '.$loc_common_phrase_sn.'   : '.create_controller_select('sn', '').'   /* Select controller serial number */
 
    DB   : <a href="?tab=del_key_db&user_id='.$user_id.'"> '.$loc_susbys_delkeys_help1.'</a>
-   <input type="submit" value="'.$loc_entity_name_controller.': '.$loc_common_phrase_del.' '.$loc_entity_name_key.'">
+   <input id="actionButton" type="button" value="'.$loc_entity_name_controller.': '.$loc_common_phrase_del.'/'.$loc_entity_name_key.'" onclick="showBlock(\'myShowBlock\')" style="display: none;" >
+   <noscript><input type="submit" value="'.$loc_entity_name_controller.': '.$loc_common_phrase_del.' '.$loc_entity_name_key.'-NO-JS"></noscript>
           </form><Br/><Br/>
-          </pre>';
+          </pre><div class="js_window1" id="myShowBlock" style="display: none;"></div>';
           }
           break;
 
@@ -627,12 +753,48 @@ ORDER BY of.name, uk.user");
           $out = "<h3>$loc_common_phrase_del $loc_entity_name_key $user_id @ $loc_menu_element_controllers</h3>\n"
                  .$r['key']." - $loc_susbys_delkeys_help1<Br/>$loc_susbys_delkeys_help2";
 
-          $out .=  '<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="del-key-from-db">
-   '.$loc_entity_name_key.'  : <input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly>  /* '.htmlspecialchars($r['comment']).' */
+          $out .=  "<script type=\"text/javascript\">
+window.onload = function() {
+   document.getElementById('actionButton').style.display = 'block';
+};
 
-   <input type="submit" value="'.$loc_menu_element_controllers.': '.$loc_common_phrase_del.' '.$loc_entity_name_key.'">
+	function showBlock(element) {
+	        data = '';
+                el = document.getElementById(element);
+                el.style.display = 'block';
+                var xmlHttp = new XMLHttpRequest();
+
+                var input_user = document.getElementsByName('user');
+                var user = input_user[0].value;
+                if ( user == '' ) {
+                     el.textContent = '$loc_entity_name_key - $loc_common_phrase_must_be_filled';
+                } else {
+                let qs = `ha-json.php?mode=queue-command&cmd=del-key-from-db&user=\${user}`;
+                console.log(qs);
+                xmlHttp.open('GET', qs, true);
+                xmlHttp.send(null);
+                xmlHttp.onreadystatechange = function() {
+                      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                      data = xmlHttp.responseText;
+                      if ( data != '' ) {
+                         json1 =  JSON.parse(data)
+                         el.textContent = json1['err'];
+                         console.log(json1['err'])
+                         if ( json1['code'] == 0 ) {
+                              el.textContent = json1['msg'];
+                             console.log('back...');
+                             setTimeout(() => { window.location.href = \"?tab=keys\"; }, 3600);
+                         }
+                      }
+                  }
+                }
+	    }
+	</script>".'<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="del-key-from-db">
+   '.$loc_entity_name_key.'  : <input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly>  /* '.htmlspecialchars($r['comment']).' */
+    <input id="actionButton" type="button" value="'.$loc_menu_element_controllers.': '.$loc_common_phrase_del.'/'.$loc_entity_name_key.'" onclick="showBlock(\'myShowBlock\')" style="display: none;" >
+   <noscript><input type="submit" value="'.$loc_menu_element_controllers.': '.$loc_common_phrase_del.' '.$loc_entity_name_key.'-NO-JS"></noscript>
           </form><Br/><Br/>
-          </pre>';
+          </pre><div class="js_window1" id="myShowBlock" style="display: none;">';
           }
           break;
 
@@ -1310,7 +1472,7 @@ window.onload = function() {
 
 if ($tab !='login' and $tab !='logout' AND isset($_SESSION['user']) AND $_SESSION['user'] != '' AND isset($user_info['user']) AND $user_info['user'] != '') {   # // TOP-MENU
      
-     $menu_elements = array ('controllers', 'keys', 'offices', 'logins', 'badkeys', 'proxy_events', 'options', 'converter');
+     $menu_elements = array ('controllers', 'keys', 'offices', 'logins', 'badkeys', 'proxy_events', 'options', 'converter', 'reports');
      print "\n".'<div class="div_top_menu">';
      foreach ($menu_elements as $menu_element) {
           $el_style = '';

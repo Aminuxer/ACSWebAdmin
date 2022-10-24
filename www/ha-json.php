@@ -163,6 +163,7 @@ if ( $mode == 'queue-command' ) {
             elseif ( $q0_numrows == 0 ) { $ret_json = '{ "code": 3, "err": "No controller with this SN number" }'; } 
             else {
                         $newkey = isset($_GET['newkey']) ? mysqli_real_escape_string($conn, $_GET['newkey']) : 0;
+                        $user = isset($_GET['user']) ? mysqli_real_escape_string($conn, $_GET['user']) : 0;
                         $q01 = mysqli_query($conn, "SELECT `n`, `key` FROM `user_keys` WHERE `key` = '$newkey' LIMIT 1") or print mysqli_error($conn);
                         $q03 = mysqli_query($conn, "SELECT `description` FROM `bad_keys` WHERE `card` = '$newkey' LIMIT 1") or print mysqli_error($conn);
                         if ( mysqli_num_rows($q01) > 0 ) { $ret_json = '{ "code": 5, "err": "This key already binded to another user" }'; }
@@ -171,7 +172,7 @@ if ( $mode == 'queue-command' ) {
                         else {
                                 if ( $q00_numrows == 0 ) {
                                      mysqli_query($conn, "INSERT INTO `user_keys` (`key`, `type`, `access`, `user`, `comment`, `photo_url`, `create_date`)
-                                                         VALUES ('$newkey', 'SIMPLE', '255', '$user', '$user', '', '$dt') ");
+                                                         VALUES ('$newkey', 'SIMPLE', '255', '$user', '$user', '', NOW()) ");
                                 }
                                 $nk_hex = mixed_hex_marine_2_pure_hex($newkey);
                                 $ret_json = '{ "code": 69, "err": "BAD KEY; '.$newkey.'; HEX: '.$nk_hex.'" } ';

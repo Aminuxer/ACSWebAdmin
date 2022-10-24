@@ -2,7 +2,7 @@
 
 session_start();
 $remote_ip = $_SERVER['REMOTE_ADDR'];
-$opts__int__sys__version = 'v.2022-10-23.004';
+$opts__int__sys__version = 'v.2022-10-24.001';
 $conn = mysqli_connect($db_host, $db_user, $db_pswd, $db_name);
 
 $z5r_reftype = array ('Z5RWEB');
@@ -36,7 +36,11 @@ function check_ip_acl($ip, $ip_acl_str) { # check_ip_acl ($_SERVER['REMOTE_ADDR'
 function mixed_hex_marine_2_pure_hex($newkey) { # 1A2F,123,45678 --> pure hexx
    if ($newkey != '') {
       $nk = explode(',', $newkey);
-      $nk_hex = str_pad(strtoupper($nk[0]), 6, "0", STR_PAD_LEFT). str_pad(strtoupper(dechex($nk[1])), 2, "0", STR_PAD_LEFT). str_pad(strtoupper(dechex($nk[2])), 4, "0", STR_PAD_LEFT);
+      if ( isset ($nk[2]) ) {
+         $nk_hex = str_pad(strtoupper($nk[0]), 6, "0", STR_PAD_LEFT)
+                  .str_pad(strtoupper(dechex($nk[1])), 2, "0", STR_PAD_LEFT)
+                  .str_pad(strtoupper(dechex($nk[2])), 4, "0", STR_PAD_LEFT);
+      } else { $nk_hex = ''; }
    } else { $nk_hex = ''; }
    return $nk_hex; }
 
