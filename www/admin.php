@@ -1467,6 +1467,10 @@ window.onload = function() {
           <input type="submit" value="'.$loc_common_phrase_send.'"></form></div>';
                break;
 
+
+     case 'reports' :
+          include ("reports/index.php");
+          break;
 }   /* End Switch */
 
 
