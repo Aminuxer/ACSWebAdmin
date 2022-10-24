@@ -66,7 +66,7 @@ CREATE TABLE `controller_names` (
 CREATE TABLE `events` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `event_code` tinyint(1) NOT NULL COMMENT 'from event_codes.id',
-  `src_ip` bigint(10) NOT NULL COMMENT 'INET_ATON ( IPv4 ) source address',
+  `src_ip` int(10) NOT NULL COMMENT 'INET_ATON ( IPv4 ) source address',
   `sn` varchar(64) NOT NULL COMMENT 'from controller_names.sn',
   `hw_type` varchar(64) NOT NULL COMMENT 'device type from event_codes.hw_type',
   `card_hex` varchar(12) NOT NULL,
@@ -127,7 +127,6 @@ INSERT INTO `event_codes` (`id`, `hw_type`, `name`, `card_number_required`, `sev
 (54,	'Z5RWEB',	'pass locked for input',	1,	'orange'),
 (55,	'Z5RWEB',	'pass locked for output',	1,	'orange');
 
-
 CREATE TABLE `last_activity_keys` (
   `key` varchar(17) NOT NULL COMMENT 'HEXX,DEC,DECCC keycard number from user_keys.key',
   `controller_hw_type` varchar(64) NOT NULL COMMENT 'HW of last used controller',
@@ -148,8 +147,8 @@ CREATE TABLE `last_state` (
   `last_deny_card_ts` datetime DEFAULT '0000-00-00 00:00:00',
   `last_button_open_ts` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `last_network_open_ts` timestamp NULL DEFAULT '0000-00-00 00:00:00',
-  `external_ip` bigint(10) DEFAULT 0,
-  `internal_ip` bigint(10) DEFAULT 0,
+  `external_ip` int(10) DEFAULT 0,
+  `internal_ip` int(10) DEFAULT 0,
   `firmware_versions` varchar(32) DEFAULT '',
   `reader_protocol` varchar(32) DEFAULT '',
   PRIMARY KEY (`sn`,`hw_type`)
@@ -220,8 +219,8 @@ INSERT INTO `options` (`id`, `abbr`, `value`, `type`) VALUES
 (14,	'opts_allow_profile_edit_comment',	'1',	'b'),
 (15,	'opts_allow_passwd_email_recovery',	'1',	'b'),
 (16,	'opts_global_sysname',	'СКУД-админка / ACS WebAdmin',	't'),
-(17,	'opts_email_recovery_from',	'ACS/СКУД Password <no-reply@localhost>',	't');
-
+(17,	'opts_email_recovery_from',	'ACS/СКУД Password <no-reply@localhost>',	't'),
+(18,	'opts_email_recovery_use_captcha',	'1',	'b');
 
 CREATE TABLE `proxy_events` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -251,7 +250,7 @@ CREATE TABLE `queue_commands` (
   `created` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'create date',
   `executed` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'execution date',
   `executer` tinyint(1) NOT NULL,
-  `ip` bigint(10) NOT NULL COMMENT 'INET_ATON ( Source IP )',
+  `ip` int(10) DEFAULT NULL COMMENT 'INET_ATON ( Source IP )',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Planned MGMT commands';
 
