@@ -4,10 +4,6 @@
 
 Server-side Web-based system for mass-management Z5RWeb ACS controllers.
 
-Status: beta.
-
-Main functions work, but some design and functions issue can occur.
-
 ![ACSWebAdmin](https://user-images.githubusercontent.com/13812192/197417577-d8f43de0-e44c-4c1f-a1cb-e3614cf18826.png)
 
 ## Features
