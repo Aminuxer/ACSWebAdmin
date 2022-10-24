@@ -26,6 +26,7 @@
   $loc_opts_allow_profile_edit_email = 'Разрешать пользователям менять свой email';
   $loc_opts_allow_profile_edit_comment = 'Разрешать пользователям менять комментарий';
   $loc_opts_allow_passwd_email_recovery = 'Включить возможность восстановления паролей по email';
+  $loc_opts_email_recovery_use_captcha = 'Требовать капчу при восстановления паролей по email';
 
   $loc_reports_presence_in_office = 'Отчёт по присутствию';
   $loc_reports_outage_in_office = 'Отчёт по отсутствию';
