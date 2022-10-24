@@ -27,6 +27,11 @@
   $loc_opts_allow_profile_edit_comment = 'Allow users change self comment';
   $loc_opts_allow_passwd_email_recovery = 'Allow passwords recovery via email';
 
+  $loc_reports_presence_in_office = 'Presence report';
+  $loc_reports_outage_in_office = 'Outage report';
+  $loc_reports_inactive_keys = 'Inactive keys report';
+  $loc_reports_alarm_events = 'Alarm events report';
+
   $loc_menu_element_controllers = 'Controllers';
   $loc_menu_element_keys = 'Keys';
   $loc_menu_element_offices = 'Offices';

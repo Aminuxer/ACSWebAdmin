@@ -27,6 +27,11 @@
   $loc_opts_allow_profile_edit_comment = 'Разрешать пользователям менять комментарий';
   $loc_opts_allow_passwd_email_recovery = 'Включить возможность восстановления паролей по email';
 
+  $loc_reports_presence_in_office = 'Отчёт по присутствию';
+  $loc_reports_outage_in_office = 'Отчёт по отсутствию';
+  $loc_reports_inactive_keys = 'Отчёт по неактивным ключам';
+  $loc_reports_alarm_events = 'Отчёт по тревожным событиям';
+
   $loc_menu_element_controllers = 'Контроллеры';
   $loc_menu_element_keys = 'Ключи';
   $loc_menu_element_offices = 'Офисы';

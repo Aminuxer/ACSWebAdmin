@@ -2,7 +2,7 @@
 
 session_start();
 $remote_ip = $_SERVER['REMOTE_ADDR'];
-$opts__int__sys__version = 'v.2022-10-24.001';
+$opts__int__sys__version = 'v.2022-10-24.002';
 $conn = mysqli_connect($db_host, $db_user, $db_pswd, $db_name);
 
 $z5r_reftype = array ('Z5RWEB');
