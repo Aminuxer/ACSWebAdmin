@@ -48,6 +48,11 @@
                  margin:25px;  padding:10px; position:relative; z-index: 2;  left:20%; top:10%;
    }
 
+   .js_window2 { color: red; background:maroon; text-align: center; font-size: 64pt;
+                 width: 70%; height: 15%; opacity: 0.5;  border:1px solid red; border-radius: 12px;
+                 margin:25px;  padding:10px; position:relative; z-index: 2;  left:20%; top:10%;
+   }
+
    .twofa_form { display: inline-block; vertical-align: top; width: 30%; border: 1px dotted gray; }
    .qrcode_img { display: inline-block; border: 5px solid red;
       position:relative; z-index: 2;

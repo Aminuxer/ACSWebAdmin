@@ -536,6 +536,7 @@ window.onload = function() {
 	        data = '';
                 el = document.getElementById(element);
                 el.style.display = 'block';
+                el.classList.remove('js_window2');
                 var xmlHttp = new XMLHttpRequest();
 
                 var selector_sn = document.getElementsByName('sn');
@@ -547,6 +548,7 @@ window.onload = function() {
                 var input_user = document.getElementsByName('user');
                 var user = input_user[0].value;
                 if ( sn == '' || newkey == '' ) {
+                     el.classList.add('js_window2');
                      el.textContent = '$loc_entity_name_controller - $loc_common_phrase_must_be_filled';
                 } else {
                 let qs = `ha-json.php?mode=queue-command&cmd=add-key&sn=\${sn}&newkey=\${newkey}&user=\${user}`;
@@ -634,6 +636,7 @@ window.onload = function() {
 	        data = '';
                 el = document.getElementById(element);
                 el.style.display = 'block';
+                el.classList.remove('js_window2');
                 var xmlHttp = new XMLHttpRequest();
 
                 var selector_sn = document.getElementsByName('sn');
@@ -645,6 +648,7 @@ window.onload = function() {
                 var input_user = document.getElementsByName('user');
                 var user = input_user[0].value;
                 if ( sn == '' || tz == '' ) {
+                     el.classList.add('js_window2');
                      el.textContent = '$loc_entity_name_controller - $loc_common_phrase_must_be_filled';
                 } else {
                 let qs = `ha-json.php?mode=queue-command&cmd=change-key&sn=\${sn}&tz=\${tz}&user=\${user}`;
@@ -699,6 +703,7 @@ window.onload = function() {
 	        data = '';
                 el = document.getElementById(element);
                 el.style.display = 'block';
+                el.classList.remove('js_window2');
                 var xmlHttp = new XMLHttpRequest();
 
                 var selector_sn = document.getElementsByName('sn');
@@ -707,6 +712,7 @@ window.onload = function() {
                 var input_user = document.getElementsByName('user');
                 var user = input_user[0].value;
                 if ( sn == '' ) {
+                     el.classList.add('js_window2');
                      el.textContent = '$loc_entity_name_controller - $loc_common_phrase_must_be_filled';
                 } else {
                 let qs = `ha-json.php?mode=queue-command&cmd=del-key&sn=\${sn}&user=\${user}`;
@@ -762,11 +768,13 @@ window.onload = function() {
 	        data = '';
                 el = document.getElementById(element);
                 el.style.display = 'block';
+                el.classList.remove('js_window2');
                 var xmlHttp = new XMLHttpRequest();
 
                 var input_user = document.getElementsByName('user');
                 var user = input_user[0].value;
                 if ( user == '' ) {
+                     el.classList.add('js_window2');
                      el.textContent = '$loc_entity_name_key - $loc_common_phrase_must_be_filled';
                 } else {
                 let qs = `ha-json.php?mode=queue-command&cmd=del-key-from-db&user=\${user}`;
@@ -1499,12 +1507,12 @@ if ( $tab == '' ) {     # // MAIN DEFAULT TAB
        <span>IP: $remote_ip</span><Br/>
        <span>2FA: ".htmlspecialchars($user_info['twofactor_method'])."</span><Br/>
        <span>$opts__int__sys__version</span>
-     </div>\n".get_statistic();
+     </div>\n".get_statistic()."\n";
 };
 
-print '<div class="main_div1">'.$out.'</div>';
+print "\n".'<div class="main_div1">'.$out.'</div>'."\n";
 
 
-print '</body></html>';
+print "\n</body></html>";
 
 ?>
