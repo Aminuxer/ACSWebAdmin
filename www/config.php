@@ -10,11 +10,12 @@ $db_pswd = 'z5r';
 /* Change this value to any random string after installation */
 $sess_secret_salt = 'this string must be changed to anywhere';
 
-$debug = 1;                    // 0 - no debug; 1 - short log; 2 - detail log; 3 - very detailed log ;
+$debug = 0;                    // 0 - no debug; 1 - short log; 2 - detail log; 3 - very detailed log ;
 $debug_log = '/tmp/z5r.txt';   // log path
 
-/* Localization. Default = ru, available = en / de or other file like ??.php from localization dir */
-$localization = 'ru';
+/* Localization. Default = ru, available = en / de / fr / es / cn / ar / in / kr / jp   */
+/* or other file like ??.php from localization dir */
+$localization = 'en';
 
 # ============================
 require("func.php");

@@ -350,7 +350,7 @@ ORDER BY of.name, uk.user");
                }
 
                $out .=  '<form method="POST"><table class="small_table">
-                    <tr> <td>'.$loc_common_phrase_sn.': </td><td> <input type=text name="nsn" placeholder="SN"> <font class="red">*</font> </td</tr>
+                    <tr> <td>'.$loc_common_phrase_sn.': </td><td> <input type=text name="nsn" placeholder="'.$loc_common_phrase_sn.'"> <font class="red">*</font> </td</tr>
                     <tr> <td>'.$loc_common_phrase_type.': </td><td> '.create_controller_type_select('ntype').' <font class="red">*</font> </td</tr>
                     <tr> <td>'.$loc_property_name_name.': </td><td> <input type=text name="nname" placeholder="Device name"> <font class="red">*</font> </td</tr>
                     <tr> <td>'.$loc_entity_name_office.': </td><td> '.create_office_select('noffice').' </td</tr>
@@ -468,7 +468,7 @@ ORDER BY of.name, uk.user");
              WHERE cn.sn = '$sn' AND cn.hw_type = '$hw' LIMIT 1");
           if ( mysqli_num_rows($q0) > 0 ) {
                $r0 = mysqli_fetch_assoc($q0);
-               $out =  "<h3>$loc_susbys_list_events, ".$r0['hw_type']." ".htmlspecialchars($r0['controller_name']).", ".htmlspecialchars($r0['office_name']).", SN: ".htmlspecialchars($sn)."</h3>";
+               $out =  "<h3>$loc_susbys_list_events, ".$r0['hw_type']." ".htmlspecialchars($r0['controller_name']).", ".htmlspecialchars($r0['office_name']).", $loc_common_phrase_sn: ".htmlspecialchars($sn)."</h3>";
                $q1 = mysqli_query($conn, "SELECT  e.id, e.event_code, e.card, e.card_hex, e.ts, e.internal_id, ec.name, ec.severity_color, uk.type, uk.access, uk.user, INET_NTOA(src_ip) AS src_ip
                          FROM `events` e
                               LEFT JOIN event_codes ec ON ec.id = e.event_code
@@ -508,7 +508,7 @@ ORDER BY of.name, uk.user");
                WHERE cn.sn = '$sn' AND cn.hw_type = '$hw' LIMIT 1");
                if ( mysqli_num_rows($q0) > 0 ) {
                          $r0 = mysqli_fetch_assoc($q0);
-                         $out =  "<h3>Queue in ".$r0['hw_type']." ".htmlspecialchars($r0['controller_name']).", ".htmlspecialchars($r0['office_name']).", SN: ".htmlspecialchars($sn)."</h3>";
+                         $out =  "<h3>$loc_susbys_list_queue ".$r0['hw_type']." ".htmlspecialchars($r0['controller_name']).", ".htmlspecialchars($r0['office_name']).", $loc_common_phrase_sn: ".htmlspecialchars($sn)."</h3>";
                          $q1 = mysqli_query($conn, "SELECT id, sn, hw_type, command, created, executed, executer, INET_NTOA(ip) AS ip FROM `queue_commands` qc WHERE qc.sn = '$sn' AND qc.hw_type = '$hw' ORDER BY qc.id ASC");
                          $out .= '<table>
                          <tr> <th>iD</th> <th>'.$loc_property_name_command.'</th>  <th>'.$loc_property_name_created.'</th> <th>'.$loc_property_name_executed.'</th> <th>'.$loc_property_name_executor.'</th> <th>IP</th> </tr>';
@@ -939,7 +939,7 @@ window.onload = function() {
 
                $out .=  '<form method="POST">
                     '.$loc_common_phrase_username.': <input type=text name="nname" value="'.$r['user'].'"> <a title="'.$loc_property_name_created.': '.$r['created_ts'].'; '."\n".$loc_property_name_last_activity.': '.$r['last_used_ts'].';">?</a><Br/>
-                    2FA: '.create_twofactor_type_select('f_twofac', $r['twofactor_method']).' <Br/>
+                    '.$loc_common_phrase_2fa.': '.create_twofactor_type_select('f_twofac', $r['twofactor_method']).' <Br/>
                     '.$loc_common_phrase_email_address.':  <input type=text name="nemail" value="'.$r['email'].'"> <Br/>
                     '.$loc_property_name_description.':  <input type=text name="ncomm" value="'.$r['comment'].'"> <Br/>
                     '.int2checkbox ($r['enable'], 'f_enable', 0, '', "$loc_common_phrase_username, $loc_property_name_enable" ).'<Br/>
@@ -1056,7 +1056,7 @@ window.onload = function() {
      case 'del_badkey' :
           if ($user_info['allow_manage_badkeys'] == 1) {
                $out =  "<h3>$loc_common_phrase_del $loc_entity_name_badkey</h3>";
-               $id = (int)$_GET['id'];
+               $id = mysqli_real_escape_string($conn, $_GET['id']);
                if ( isset($_POST['nname']) and $_POST['nname'] != '' ) {
                     try {
                          $q2 = mysqli_query($conn, "DELETE FROM `bad_keys` WHERE `card` = '$id' LIMIT 1") or print mysqli_error($conn);
@@ -1182,7 +1182,7 @@ window.onload = function() {
                     <tr> <td>'.$loc_common_phrase_type.': </td><td> '.create_controller_type_select('ntype').' <font class="red">*</font> </td</tr>
                     <tr> <td>'.$loc_property_name_code.': </td><td> '.create_event_code_select('ncode').' <font class="red">*</font> </td</tr>
                     <tr> <td>'.$loc_property_name_description.': </td><td> <input type=text name="nname" placeholder="info..."> </td</tr>
-                    <tr> <td>'.$loc_property_name_enable.': </td><td> '.int2checkbox(0, 'nenable', 0, '', 'Вкл').' </td</tr>
+                    <tr> <td>'.$loc_property_name_enable.': </td><td> '.int2checkbox(0, 'nenable', 0, '', $loc_property_name_enable).' </td</tr>
 
                     <tr> <td>'.$loc_property_name_url.': </td><td> <input type=text name="nurl" placeholder="site.net/my.php?device=[SN]&event=[EVENT_CODE]...&"> [SN] [HWTYPE] [EVENT_ID] [EVENT_CODE] [CARD] [CARD_HEX] [DATETIME] [LOGIN] [OFFICE] [IP]</td></tr>
                     <tr> <td>http-method </td><td> '.create_http_method_select('nmethod').' </td</tr>
@@ -1223,7 +1223,7 @@ window.onload = function() {
                     <tr> <td>'.$loc_common_phrase_type.': </td><td> '.create_controller_type_select('ntype', $r['hw_type']).' <font class="red">*</font> </td</tr>
                     <tr> <td>'.$loc_property_name_code.': </td><td> '.create_event_code_select('ncode', $r['event_code']).' <font class="red">*</font> </td</tr>
                     <tr> <td>'.$loc_property_name_description.': </td><td> <input type=text name="nname" placeholder="info..." value="'.$r['comment'].'"> </td</tr>
-                    <tr> <td>'.$loc_property_name_enable.': </td><td> '.int2checkbox($r['enable'], 'nenable', 0, '', 'Вкл').' </td</tr>
+                    <tr> <td>'.$loc_property_name_enable.': </td><td> '.int2checkbox($r['enable'], 'nenable', 0, '', $loc_property_name_enable).' </td</tr>
 
                     <tr> <td>'.$loc_property_name_url.': </td><td> <input type=text name="nurl" placeholder="site.net/my.php?device=[SN]&event=[EVENT_CODE]...&" value="'.$r['target_url'].'"> [SN] [HWTYPE] [EVENT_ID] [EVENT_CODE] [CARD] [CARD_HEX] [DATETIME] [LOGIN] [OFFICE] [IP]</td></tr>
                     <tr> <td>http-method </td><td> '.create_http_method_select('nmethod', $r['target_method']).' </td</tr>
@@ -1252,7 +1252,7 @@ window.onload = function() {
                     <tr> <td>'.$loc_common_phrase_type.': </td><td> '.create_controller_type_select('disabled', $r['hw_type']).'</td</tr>
                     <tr> <td>'.$loc_property_name_code.': </td><td> '.create_event_code_select('disabled', $r['event_code']).'</td</tr>
                     <tr> <td>'.$loc_property_name_description.': </td><td> <input type=text disabled value="'.$r['comment'].'"> </td</tr>
-                    <tr> <td>'.$loc_property_name_enable.': </td><td> '.int2checkbox($r['enable'], 'nenable', 1, '', 'Вкл').' </td</tr>
+                    <tr> <td>'.$loc_property_name_enable.': </td><td> '.int2checkbox($r['enable'], 'nenable', 1, '', $loc_property_name_enable).' </td</tr>
 
                     <tr> <td>'.$loc_property_name_url.': </td><td> <input type=text name="nurl" readonly value="'.$r['target_url'].'"></td></tr>
                     <tr> <td>http-method </td><td> '.create_http_method_select('disabled', $r['target_method']).' </td</tr>
@@ -1316,7 +1316,7 @@ window.onload = function() {
                        <tr> <td>'.$loc_common_phrase_email_address.'</td> <td> <input type="text" name="f_email" value="'.htmlspecialchars($user_info['email']).'"'.$mail_lock.'></td> </tr>
                        <tr> <td>'.$loc_property_name_description.'</td> <td> <input type="text" name="f_comment" value="'.htmlspecialchars($user_info['comment']).'"'.$comm_lock.'> </td> </tr>
                        <tr> <td>'.$loc_common_phrase_password.'</td> <td> <input type="password" name="f_new_pswd1"'.$pswd_lock.'> <input type="password" name="f_new_pswd2"'.$pswd_lock.'> </td> </tr>
-                       <tr> <td>2FA</td> <td>'.$user_info['twofactor_method'].' <a href="?tab=twofactor">'.$loc_common_phrase_edit.'</a> </td> </tr>
+                       <tr> <td>'.$loc_common_phrase_2fa.'</td> <td>'.$user_info['twofactor_method'].' <a href="?tab=twofactor">'.$loc_common_phrase_edit.'</a> </td> </tr>
                        <tr> <td>'.$loc_property_name_ipsubnets.'</td> <td> <input type="text" name="f_iprange" value="'.htmlspecialchars($user_info['allowed_ip_range']).'"'.$ipr_lock.'> </td> </tr>
                        <tr> <td>'.$loc_property_name_created.'</td> <td>'.$user_info['created_ts'].'</td> </tr>
                        <tr> <td>'.$loc_property_name_last_activity.'</td> <td>'.$user_info['last_used_ts'].'</td> </tr>
@@ -1450,7 +1450,7 @@ window.onload = function() {
                $out .= $loc_susbys_mail_sending;
                $mail_headers = "Content-Type: text/html; charset=UTF-8\r\nFrom: $opts_email_recovery_from\r\n";
                $body = "<html><head>$opts_global_sysname - $loc_property_name_code</head>
-               <body><Br/><Br/><h3>Запрос кода 2FA</h3><i>$loc_property_name_code</i>: <B>".$_SESSION['twofa_shared_4send']."</B><Br/><Br/></body></html>";
+               <body><Br/><Br/><h3>$loc_property_name_code $loc_common_phrase_2fa</h3><i>$loc_property_name_code</i>: <B>".$_SESSION['twofa_shared_4send']."</B><Br/><Br/></body></html>";
                if ( ! mail ($user_info['email'], "$opts_global_sysname - $loc_property_name_code", $body, $mail_headers) ) { $out .= 'Mail not send'; };
                if ( isset($_POST['f_answer']) AND $_POST['f_answer'] == $_SESSION['twofa_shared_4send'] ) {
                     $_SESSION['twofactor_passed'] = 1;
@@ -1505,7 +1505,7 @@ if ( $tab == '' ) {     # // MAIN DEFAULT TAB
        <span>$loc_susbys_greeting</span><Br/>
        <span>$loc_common_phrase_username: $logged_user</span><Br/>
        <span>IP: $remote_ip</span><Br/>
-       <span>2FA: ".htmlspecialchars($user_info['twofactor_method'])."</span><Br/>
+       <span>$loc_common_phrase_2fa: ".htmlspecialchars($user_info['twofactor_method'])."</span><Br/>
        <span>$opts__int__sys__version</span>
      </div>\n".get_statistic()."\n";
 };
