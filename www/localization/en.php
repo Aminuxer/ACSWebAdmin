@@ -16,7 +16,7 @@
   $loc_opts_restrict_manage_keys_ips = 'Allow edit keys only from this IPs';
   $loc_opts_restrict_enroll_keys_ips = 'Allow enroll keys only from this IPs';
   $loc_opts_restrict_anonim_view_ips = 'Allow display anonymous statistics only to this IPs';
-  $loc_opts_allow_autoreg_controllers = 'Automatically register new controllers in DB';
+  $loc_opts_allow_autoreg_controllers = 'Automatically register new controllers in database';
   $loc_opts_allow_autoreg_auto_ip_filt = 'At controllers autoregistration bind this to IP';
   $loc_opts_hardware_z5r_interval = 'Polling interval for Z5R-Web';
   $loc_opts_global_sysname = 'System name';
@@ -30,7 +30,7 @@
 
   $loc_reports_presence_in_office = 'Presence report';
   $loc_reports_presence_in_office_per_days = 'Presence report per days';
-  $loc_reports_outage_in_office = 'Outage report';
+  $loc_reports_outage_in_office = 'Absense report';
   $loc_reports_inactive_keys = 'Inactive keys report';
   $loc_reports_alarm_events = 'Alarm events report';
 
@@ -46,7 +46,7 @@
   $loc_menu_element_reports = 'Reports';
 
   $loc_susbys_greeting = 'Welcome !';
-  $loc_susbys_email_pswd_recovery = 'E-Mail password recovery';
+  $loc_susbys_email_pswd_recovery = 'password recovery over E-Mail';
   $loc_susbys_email_pswd_recovery_mail_body1 = 'If you don\'t request password recovery, just remove this email.';
   $loc_susbys_email_pswd_recovery_mail_body2 = 'Never disclosure, share or submit your passwords and links from password-recovery emails !<Br/>
         Password recovery links valid only through current day (twenty-four hours) and same IP-address. Two-factor authentication won\'t reset';
@@ -61,16 +61,16 @@
   $loc_susbys_src_ip_bind_help2 = 'Any IP can send new-added controller\'s data.';
   $loc_susbys_src_ip_bind_help3 = 'New controllers can be added manually only.';
   $loc_susbys_controllers_no_data = 'NO active contollers data. At least one controller must send data.';
-  $loc_susbys_addkeys_help1 = 'If key wasn\'t found in local DB - it will be added.<Br />Your can enroll key only to registered controller (by serail number)';
-  $loc_susbys_addkeys_tzhelp1 = 'Example TZ (timezones bitmap)';
-  $loc_susbys_delkeys_help1 = 'Delete from DB and ALL controllers';
+  $loc_susbys_addkeys_help1 = 'If key wasn\'t found in local database - it will be added.<Br />Your can enroll key only to registered controller (by serial number)';
+  $loc_susbys_addkeys_tzhelp1 = 'Example TZ (time regions bitmask)';
+  $loc_susbys_delkeys_help1 = 'Delete from database and ALL controllers';
   $loc_susbys_delkeys_help2 = 'Powered off or long-time inactive controllers can avoid deleting keys';
-  $loc_susbys_logins_help1 = 'Logins for management tasks only. Don\'t rely to controller\'s work.';
+  $loc_susbys_logins_help1 = 'Logins are for management tasks only. Do not affect the operation of the controller.';
   $loc_susbys_badkeys_help1 = 'Bad or compromized keys cannot be added to controllers';
   $loc_susbys_confirm_mail_send = 'Confirm sendind email with code.';
   $loc_susbys_mail_sending = 'Sening email ...';
   $loc_susbys_2fa_method = 'Method';
-  $loc_susbys_2fa_sign = 'Sign';
+  $loc_susbys_2fa_sign = 'Signature';
   $loc_susbys_2fa_wallet = 'Wallet';
   $loc_susbys_2fa_shared_secret = 'Shared secret';
   $loc_susbys_2fa_test_string = 'Test string';
@@ -79,12 +79,12 @@
                     Electrum: make_seed(seed_type="standard") , import phrase<Br/>Sign test string and send detached signature<Br/>
                     Your wallet will required for authentication.';
   $loc_susbys_2fa_help2 = 'sign test string with your wallet';
-  $loc_susbys_open_door = 'Open door';
+  $loc_susbys_open_door = 'Open the door';
 
   $loc_common_phrase_not_accessible = 'not accessible';
   $loc_common_phrase_ip_not_alllowed = 'this IP not allowed';
   $loc_common_phrase_disabled_global_options = 'disabled in global options';
-  $loc_common_phrase_disabled_user_profile = 'inaccessible for user profile';
+  $loc_common_phrase_disabled_user_profile = 'inaccessible for this user';
   $loc_common_phrase_no_datarecords = 'No data. Add at least one record.';
   $loc_common_phrase_on = 'ON';
   $loc_common_phrase_off = 'OFF';

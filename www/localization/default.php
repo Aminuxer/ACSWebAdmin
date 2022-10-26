@@ -87,9 +87,9 @@
   $loc_common_phrase_no_datarecords = 'нет данных. Добавьте хотя бы одну запись';
   $loc_common_phrase_on = 'включена';
   $loc_common_phrase_off = 'выключена';
-  $loc_common_phrase_sn = 'SN';
-  $loc_common_phrase_hw = 'HW';
-  $loc_common_phrase_2fa = '2FA';
+  $loc_common_phrase_sn = 'Серийник';
+  $loc_common_phrase_hw = 'Железо';
+  $loc_common_phrase_2fa = 'Двухфакторка';
   $loc_common_phrase_type = 'Тип';
   $loc_common_phrase_activity = 'Активность';
 
