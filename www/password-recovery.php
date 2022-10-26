@@ -59,7 +59,7 @@ elseif ( $step == 1 ) {
                 $r1 = mysqli_fetch_assoc($q1);
                 if ( $r1['enable'] == 0 ) { print "$loc_common_phrase_username ".htmlspecialchars($user)." : $loc_common_phrase_activity = $loc_common_phrase_off; $loc_common_phrase_disabled_user_profile<Br/>$back_link"; }
                 elseif ( $r1['allowed_ip_range'] != '' AND check_ip_acl($remote_ip, $r1['allowed_ip_range']) == 0 ) {
-                         print "$loc_common_phrase_username ".htmlspecialchars($user)." : $loc_common_phrase_ip_not_alllowed - $loc_common_phrase_disabled_user_profile <Br/>$back_link";
+                         print "$loc_common_phrase_username ".htmlspecialchars($user)." : $loc_common_phrase_ip_not_allowed - $loc_common_phrase_disabled_user_profile <Br/>$back_link";
                 } else {
                   $step_1_ref_hash = hash('sha512', 'EMAIL_1_STEP_'.$remote_ip.$sess_secret_salt.$r1['user'].$r1['email'].$r1['password_sha'].$hash0.date("Ymd").'__1_STEP');
                   $url = "http".(!empty($_SERVER['HTTPS'])?"s":"")."://".$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'].'?step=2&user='.$user.'&mail='.$mail.'&hash0='.$step_0_ref_hash.'&hash1='.$step_1_ref_hash;
@@ -93,7 +93,7 @@ elseif ( $step == 2 ) {
                            FROM logins WHERE `user` = '".mysqli_real_escape_string($conn, $user)."' AND `email` = '".mysqli_real_escape_string($conn, $mail)."' AND `enable` = '1' LIMIT 1");
         $r2 = mysqli_fetch_assoc($q2);
         if ( $r2['allowed_ip_range'] != '' AND check_ip_acl($remote_ip, $r2['allowed_ip_range']) == 0 ) {
-                         print "$loc_common_phrase_username ".htmlspecialchars($user)." : $loc_common_phrase_ip_not_alllowed - $loc_common_phrase_disabled_user_profile <Br/>$back_link";
+                         print "$loc_common_phrase_username ".htmlspecialchars($user)." : $loc_common_phrase_ip_not_allowed - $loc_common_phrase_disabled_user_profile <Br/>$back_link";
         } else {
           $hash1_ref = hash('sha512', 'EMAIL_1_STEP_'.$remote_ip.$sess_secret_salt.$r2['user'].$r2['email'].$r2['password_sha'].$hash0.date("Ymd").'__1_STEP');
           if ( $hash1_ref != $hash1 ) { print "$loc_common_phrase_error : HASH-1 $loc_common_phrase_not_active; $loc_susbys_email_pswd_recovery_bad_hash"; } else {
