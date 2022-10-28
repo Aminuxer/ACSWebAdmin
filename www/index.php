@@ -147,24 +147,25 @@ $json = json_decode($raw_post_data, true);
                         /* START EVENT PROXIFY */
                         $q2 = "SELECT * FROM `proxy_events` WHERE `event_code` = '$event_code' AND `enable` = '1'
                                          AND `sn` = '$sn' AND `hw_type` = '$hw_type' ";
-                        if ($debug >= 1) { $debug_str .= "\n3.2-EventsProxy-SQL. $q2"; };
                         $qq2 = mysqli_query($conn, $q2);
+                        if ($debug >= 1 and mysqli_num_rows($qq2) > 0 ) { $debug_str .= "\n3.2-EventsProxy-SQL-with-rows. $q2"; };
+
                         while ( $ev = mysqli_fetch_array($qq2) ) {       #   Start events processing
                            if ($debug >= 1) { $debug_str .= "\n3.2.1-ProxyEvent-iD ".$ev['id'].", Code $event_code, SN $sn, HW $hw_type,
                                send ".$ev['target_method']." to ".$ev['target_url']; };
 
-                               if ($ev['target_method'] == 'POST-RAW' or $ev['target_method'] == 'PUT-RAW') {
-                                  $proxy_body = $ev['target_raw_body'];
-                               } else { $proxy_body = ''; }
-
                            $f_url = $ev['target_url'];
-                           if ( preg_match( '/LOGIN|OFFICE/', $f_url) ) {  /* if need extra-data - fetch this from DB */
+                           $f_body = $ev['target_raw_body'];
+                           if ( preg_match( '/LOGIN|OFFICE/', $f_url) or preg_match( '/LOGIN|OFFICE/', $f_body) ) {
+                                /* if need extra-data - fetch this from DB */
                                 $extra1 = mysqli_query($conn, "SELECT uk.type AS key_type, uk.access as access, uk.user AS login, uk.comment, uk.photo_url, uk.office_id, of.name AS offce_name, of.address AS office_address FROM `user_keys` uk
                                                                LEFT JOIN offices of ON of.id = uk.office_id
                                                                WHERE uk.key = '$emmarine_code' LIMIT 1");
                                 $extrar1 = mysqli_fetch_assoc($extra1);
                                 $f_url = str_replace('[LOGIN]', $extrar1['login'], $f_url);
                                 $f_url = str_replace('[OFFICE]', $extrar1['offce_name'], $f_url);
+                                $f_body = str_replace('[LOGIN]', $extrar1['login'], $f_body);
+                                $f_body = str_replace('[OFFICE]', $extrar1['offce_name'], $f_body);
                            }
                            $f_url = str_replace('[SN]', $sn, $f_url);
                            $f_url = str_replace('[HWTYPE]', $hw_type, $f_url);
@@ -175,6 +176,15 @@ $json = json_decode($raw_post_data, true);
                            $f_url = str_replace('[DATETIME]', $event_time, $f_url);
                            $f_url = str_replace('[IP]', $remote_ip, $f_url);
 
+                           $f_body = str_replace('[SN]', $sn, $f_body);
+                           $f_body = str_replace('[HWTYPE]', $hw_type, $f_body);
+                           $f_body = str_replace('[EVENT_ID]', $event_code_last_id, $f_body);
+                           $f_body = str_replace('[EVENT_CODE]', $event_code, $f_body);
+                           $f_body = str_replace('[CARD]', $event['card'], $f_body);
+                           $f_body = str_replace('[CARD_HEX]', $emmarine_code, $f_body);
+                           $f_body = str_replace('[DATETIME]', $event_time, $f_body);
+                           $f_body = str_replace('[IP]', $remote_ip, $f_body);
+//
                            $params_string = parse_url($f_url, PHP_URL_QUERY);
                            parse_str($params_string, $params_array);
 
@@ -203,10 +213,14 @@ $json = json_decode($raw_post_data, true);
                            }
 
                            if ($ev['target_method'] == 'PUT-RAW' or $ev['target_method'] == 'PUT-PARAMS') {
-                              curl_setopt($http_curl, CURLOPT_RETURNTRANSFER, true);
                               curl_setopt($http_curl, CURLOPT_CUSTOMREQUEST, "PUT");
                               curl_setopt($http_curl, CURLOPT_POSTFIELDS, http_build_query($params_array));
                            }
+
+                           if ($ev['target_method'] == 'POST-RAW' or $ev['target_method'] == 'PUT-RAW') {
+                                  curl_setopt($http_curl, CURLOPT_POSTFIELDS, $f_body);
+                           }
+
 
                            $http_data = curl_exec($http_curl);
                            if ($debug > 0) {

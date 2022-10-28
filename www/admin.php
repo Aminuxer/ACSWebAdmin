@@ -24,7 +24,7 @@ if ( isset($_SESSION['user']) AND $_SESSION['user'] != '' AND $_SESSION['control
           $sk = isset ($_POST['sk']) ? mysqli_real_escape_string($conn, $_POST['sk']) : '';
           $tz = isset ($_POST['tz']) ? (int)($_POST['tz']) : 0;
 
-          $out .=  '<form method="POST"> <Br/>
+          $out .=  '<form method="POST" name="form1"> <Br/>
                iD : <input type=text name="sk" value="'.$sk.'" placeholder="XXXX,ddd,ddddd"> <Br/>
                TZ : <input type=text name="tz" value="'.$tz.'" title="0..255"> <Br/><Br/>
                <input type="submit" value="'.$loc_common_phrase_send.'">
@@ -58,10 +58,19 @@ if ( isset($_SESSION['user']) AND $_SESSION['user'] != '' AND $_SESSION['control
               }
           }
 
-          $out =  '<div class="div_login_form">
+          $out =  "<script>
+          function hide_password(input_id, link_id) {   // Password VISIBLE
+    el = document.getElementById(input_id);
+    el2 = document.getElementById(link_id);
+    if (el.type == 'password')
+           { el.type = 'text';      el2.classList.add('red'); }
+      else { el.type = 'password';  el2.classList.remove('red'); }
+    }
+          </script>".'<div class="div_login_form">
           <FORM method="POST">
                <INPUT type="text" name="f_user" placeholder="<'.$loc_common_phrase_username.'>" title="'.$loc_common_phrase_username.'"> <Br/>
-               <INPUT type="password" name="f_pswd"  placeholder="<'.$loc_common_phrase_password.'>" title="'.$loc_common_phrase_password.'"> <Br/>
+               <INPUT type="password" id="f_pswd" name="f_pswd"  placeholder="<'.$loc_common_phrase_password.'>" title="'.$loc_common_phrase_password.'">
+                   <a onclick="hide_password(\'f_pswd\', \'f_pswd_a\')" id="f_pswd_a">***ꙭ</a><Br/>
                <INPUT type="submit" value="'.$loc_common_phrase_login.'"><Br/>
           </FORM></div>'.$out;
      $tab = 'no_access';
@@ -274,12 +283,11 @@ ORDER BY of.name, uk.user");
                     $q2 = mysqli_query($conn, "INSERT INTO offices (`name`, `address`) VALUES ('$nname', '$naddr' ) ") or print mysqli_error($conn);
                     print '<META HTTP-EQUIV="REFRESH" CONTENT="0;URL=?tab=offices">';
                }
-               $out .=  '<form method="POST">
-                    '.$loc_property_name_name.': <input type=text name="nname"><Br/>
-                    '.$loc_property_name_address.': <input type=text name="naddr"><Br/>
-                    <input type="submit" value="'.$loc_common_phrase_save.'">
-               </form><Br/><Br/>
-               <pre>';
+               $out .=  '<form method="POST"><table>
+                 <tr> <td>'.$loc_property_name_name.'</td> <td><input type=text name="nname"> </td></tr>
+                 <tr> <td>'.$loc_property_name_address.'</td> <td><input type=text name="naddr"> </td></tr>
+                 <tr> <td colspan="2"> <input type="submit" value="'.$loc_common_phrase_save.'"> </td></tr>
+               </table></form>';
           } else { $out .= "$loc_common_phrase_disabled_user_profile"; }
           break;
 
@@ -322,11 +330,11 @@ ORDER BY of.name, uk.user");
                $q1 = mysqli_query($conn, "SELECT * FROM `offices` WHERE `id` = '$id' LIMIT 1") or print mysqli_error($conn);
                $r = mysqli_fetch_assoc($q1);
                $out .=  '<form method="POST">
-                    '.$loc_property_name_name.': <input type="hidden" name="nname" value="'.$r['id'].'">'.htmlspecialchars($r['name']).'<Br/>
-                    '.$loc_property_name_address.': '.htmlspecialchars($r['address']).'<Br/>
-                    <input type="submit" value="'.$loc_common_phrase_del.'">
-               </form><Br/><Br/>
-               <pre>';
+                 <table>
+               <tr> <td>'.$loc_property_name_name.'</td> <td><input type="hidden" name="nname" value="'.$r['id'].'">'.htmlspecialchars($r['name']).'</td></tr>
+               <tr> <td>'.$loc_property_name_address.'</td> <td>'.htmlspecialchars($r['address']).'</td></tr>
+               <tr> <td colspan="2"><input type="submit" value="'.$loc_common_phrase_del.'"></td></tr>
+               </table></form>';
           } else { $out .= "$loc_common_phrase_disabled_user_profile"; }
           break;
 
@@ -528,30 +536,27 @@ ORDER BY of.name, uk.user");
                     $out =  "<h3>$loc_common_phrase_add $loc_entity_name_key:</h3>$loc_susbys_addkeys_help1";
 
           $out .=  "<script type=\"text/javascript\">
-window.onload = function() {
-   document.getElementById('actionButton').style.display = 'block';
-};
-
 	function showBlock(element) {
+          	    form = document.getElementById('form1');
+                document.getElementById('submit_button').type='button';
 	        data = '';
                 el = document.getElementById(element);
                 el.style.display = 'block';
                 el.classList.remove('js_window2');
                 var xmlHttp = new XMLHttpRequest();
 
-                var selector_sn = document.getElementsByName('sn');
-                var sn = selector_sn[0].value;
-
-                var input_newkey = document.getElementsByName('newkey');
-                var newkey = input_newkey[0].value;
-
-                var input_user = document.getElementsByName('user');
-                var user = input_user[0].value;
-                if ( sn == '' || newkey == '' ) {
+                pattern = form.newkey.pattern;
+                var regexp = new RegExp(pattern, 'g');
+                console.log('RegExp: '+ pattern+'   MATCH: '+form.newkey.value.match(regexp));
+                if ( form.newkey.value == '' || form.newkey.value.match(regexp) == null ) {
+                     el.classList.add('js_window2');
+                     el.textContent = '$loc_entity_name_key !~ '+pattern;
+                }
+                else if ( form.sn.value == '' ) {
                      el.classList.add('js_window2');
                      el.textContent = '$loc_entity_name_controller - $loc_common_phrase_must_be_filled';
                 } else {
-                let qs = `ha-json.php?mode=queue-command&cmd=add-key&sn=\${sn}&newkey=\${newkey}&user=\${user}`;
+                let qs = form.action+'?mode='+form.mode.value+'&cmd='+form.cmd.value+'&sn='+form.sn.value+'&newkey='+form.newkey.value+'&user='+form.user.value;
                 console.log(qs);
                 xmlHttp.open('GET', qs, true);
                 xmlHttp.send(null);
@@ -566,19 +571,23 @@ window.onload = function() {
                               el.textContent = json1['msg'];
                              console.log('back...');
                              setTimeout(() => { window.location.href = \"?tab=keys\"; }, 3600);
+                         } else {
+                             el.classList.add('js_window2');
                          }
                       }
                   }
                 }
 	    }
-	</script>".'<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="add-key">
- '.$loc_property_name_code.'         : <input type=text name="newkey" pattern="^[0-9A-F]{4},[0-9]{3},[0-9]{5}$"  placeholder="XXXX,ddd,ddddd"> <Br/>
- '.$loc_common_phrase_sn.' : '.create_controller_select('sn', '').' <Br/>
- '.$loc_common_phrase_username.': <input type="text" name="user"> <Br/>
-       <input id="actionButton" type="button" value="'.$loc_common_phrase_add.' '.$loc_entity_name_key.'" onclick="showBlock(\'myShowBlock\')" style="display: none;" >
-       <noscript><input type="submit" value="'.$loc_common_phrase_add.' '.$loc_entity_name_key.'-NO-JS"></noscript>
-          </form><Br/><Br/>
-          </pre>          <div class="js_window1" id="myShowBlock" style="display: none;"></div>';
+	</script>".'<form method="GET" action="ha-json.php" id="form1">
+	<input type="hidden" name="mode" value="queue-command">
+	<input type="hidden" name="cmd" value="add-key">
+<table>
+ <tr> <td>'.$loc_property_name_code.'</td> <td> <input type=text name="newkey" pattern="^[0-9A-F]{4},[0-9]{3},[0-9]{5}$"  placeholder="XXXX,ddd,ddddd"> </td> </tr>
+ <tr> <td>'.$loc_entity_name_controller.', '.$loc_common_phrase_sn.'</td> <td>'.create_controller_select('sn', '').' </td> </tr>
+ <tr> <td>'.$loc_common_phrase_username.'</td> <td><input type="text" name="user"> </td> </tr>
+ <tr> <td colspan="2"> <input type="submit" value="'.$loc_common_phrase_add.' '.$loc_entity_name_key.'" id="submit_button" onclick="showBlock(\'myShowBlock\')"> </td> </tr>
+          </table> </form>
+<div class="js_window1" id="myShowBlock" style="display: none;"></div>';
           };
           break;
 
@@ -599,21 +608,21 @@ window.onload = function() {
                       print '<META HTTP-EQUIV="REFRESH" CONTENT="0;URL=?tab=keys">';
                  }
 
-          $q1 = mysqli_query($conn, "SELECT * FROM `user_keys` WHERE `n` = '$user_id' LIMIT 1");
+          $q1 = mysqli_query($conn, "SELECT uk.* FROM `user_keys` `uk`  WHERE `uk`.`n` = '$user_id' LIMIT 1");
           $r = mysqli_fetch_assoc($q1);
           $out = '<h3>'.$loc_common_phrase_edit.' '.$loc_entity_name_key.' #'.$user_id.', '.$loc_property_name_code.' '.$r['key'].'</h3>';
 
-          $out .=  "\n".'<pre><form method="POST">
-   User        : <input type=text name="new_username" value="'.$r['user'].'">
-   '.$loc_property_name_description.'     : <input type=text name="new_comment" value="'.$r['comment'].'">
-   '.$loc_entity_name_office.' : '.create_office_select('new_office_id', $r['office_id']).'
-   '.$loc_property_name_access.' : <input type=text name="new_tz" value="'.$r['access'].'"> '.tz_to_accstr($r['access'], 1).'
-   /* 255 - '.$loc_common_phrase_always.'; 0 - '.$loc_common_phrase_never.'; 1-127 - '.$loc_susbys_addkeys_tzhelp1.'; */
-   '.$loc_property_name_created.' : '.$r['create_date'].'
+          $out .=  "\n".'<form method="POST" id="form1">
+<table>
+   <tr> <td>User</td> <td><input type=text name="new_username" value="'.$r['user'].'"></td> </tr>
+   <tr> <td>'.$loc_property_name_description.'</td> <td><input type=text name="new_comment" value="'.$r['comment'].'"></td> </tr>
+   <tr> <td>'.$loc_entity_name_office.'</td> <td>'.create_office_select('new_office_id', $r['office_id']).'</td> </tr>
+   <tr> <td>'.$loc_property_name_access.'</td> <td><input type=text name="new_tz" value="'.$r['access'].'"> '.tz_to_accstr($r['access'], 1).'
+         /* 255 - '.$loc_common_phrase_always.'; 0 - '.$loc_common_phrase_never.'; 1-127 - '.$loc_susbys_addkeys_tzhelp1.'; */</td> </tr>
+   <tr> <td>'.$loc_property_name_created.'</td> <td>'.$r['create_date'].'</td> </tr>
 
-     <input type="submit" value="'.$loc_common_phrase_save.' '.$loc_entity_name_key.'">
-          </form><Br/><Br/>
-          </pre>';
+     <tr> <td colspan="2"><input type="submit" value="'.$loc_common_phrase_save.' '.$loc_entity_name_key.'"></td> </tr>
+  </table></form>';
           }
           break;
 
@@ -628,30 +637,20 @@ window.onload = function() {
           $out = "<h3>$loc_common_phrase_enroll $loc_entity_name_key $user_id</h3>";
 
           $out .=  "<script type=\"text/javascript\">
-window.onload = function() {
-   document.getElementById('actionButton').style.display = 'block';
-};
-
 	function showBlock(element) {
+          	    form = document.getElementById('form1');
+                document.getElementById('submit_button').type='button';
 	        data = '';
                 el = document.getElementById(element);
                 el.style.display = 'block';
                 el.classList.remove('js_window2');
                 var xmlHttp = new XMLHttpRequest();
 
-                var selector_sn = document.getElementsByName('sn');
-                var sn = selector_sn[0].value;
-
-                var input_tz = document.getElementsByName('tz');
-                var tz = input_tz[0].value;
-
-                var input_user = document.getElementsByName('user');
-                var user = input_user[0].value;
-                if ( sn == '' || tz == '' ) {
+                if ( form.sn.value == '' || form.user.value == '' ) {
                      el.classList.add('js_window2');
                      el.textContent = '$loc_entity_name_controller - $loc_common_phrase_must_be_filled';
                 } else {
-                let qs = `ha-json.php?mode=queue-command&cmd=change-key&sn=\${sn}&tz=\${tz}&user=\${user}`;
+                let qs = form.action+'?mode='+form.mode.value+'&cmd='+form.cmd.value+'&sn='+form.sn.value+'&tz='+form.tz.value+'&user='+form.user.value;
                 console.log(qs);
                 xmlHttp.open('GET', qs, true);
                 xmlHttp.send(null);
@@ -666,19 +665,28 @@ window.onload = function() {
                               el.textContent = json1['msg'];
                              console.log('back...');
                              setTimeout(() => { window.location.href = \"?tab=enroll_key&user_id=$user_id\"; }, 3600);
+                         } else {
+                             el.classList.add('js_window2');
                          }
                       }
                   }
                 }
 	    }
-	</script>".'<pre><form method="GET" action="ha-json.php">  <input type="hidden" name="mode" value="queue-command">  <input type="hidden" name="cmd" value="change-key">
-   '.$loc_entity_name_key.'  : <input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly>    /* '.htmlspecialchars($r['comment']).' */
-   '.$loc_common_phrase_sn.'   : '.create_controller_select('sn', '').'   /* Controller serial number */
-   '.$loc_property_name_access.'   : <input type=text name="tz" value="'.$r['access'].'">   /* 255 full access; 0 no access; 1-127 time-regions bitmask; Current access: '.tz_to_accstr($r['access'], 1).' */
-       <input id="actionButton" type="button" value="'.$loc_common_phrase_enroll.' '.$loc_entity_name_key.'/'.$loc_property_name_access.'" onclick="showBlock(\'myShowBlock\')" style="display: none;" >
-     <noscript><input type="submit" value="'.$loc_common_phrase_enroll.' '.$loc_entity_name_key.'/'.$loc_property_name_access.'-NO-JS"></noscript>
-          </form><Br/><Br/>
-          </pre><div class="js_window1" id="myShowBlock" style="display: none;"></div>'.$loc_susbys_addkeys_tzhelp1.': <Br/>
+	</script>".'<form method="GET" action="ha-json.php" id="form1">
+	    <input type="hidden" name="mode" value="queue-command">
+        <input type="hidden" name="cmd" value="change-key">
+<table>
+ <tr> <td>'.$loc_entity_name_key.'</td> <td><input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly> </td></tr>
+ <tr> <td>'.$loc_property_name_description.'</td> <td>'.htmlspecialchars($r['comment']).'</td></tr>
+ <tr> <td>'.$loc_property_name_created.'</td> <td>'.$r['create_date'].'</td> </tr>
+ <tr> <td>'.$loc_entity_name_controller.', '.$loc_common_phrase_sn.'</td> <td>'.create_controller_select('sn', '').' </td></tr>
+ <tr> <td>'.$loc_property_name_access.'</td> <td><input type=text name="tz" value="'.$r['access'].'">
+     ('.tz_to_accstr($r['access'], 1).') /* 255 full access; 0 no access; 1-127 time-regions bitmask;</td></tr>
+ <tr> <td colspan="2">
+     <input type="submit" value="'.$loc_common_phrase_enroll.' '.$loc_entity_name_key.'/'.$loc_property_name_access.'" id="submit_button" onclick="showBlock(\'myShowBlock\')">
+  </td></tr>
+</table></form>
+          <div class="js_window1" id="myShowBlock" style="display: none;"></div>'.$loc_susbys_addkeys_tzhelp1.': <Br/>
 <img src="rasp.png" alt="TZ" />';
           }
           break;
@@ -695,27 +703,20 @@ window.onload = function() {
           $out = "<h3>$loc_common_phrase_del $loc_entity_name_key $user_id @ $loc_entity_name_controller</h3>".$r['key'];
 
           $out .=  "<script type=\"text/javascript\">
-window.onload = function() {
-   document.getElementById('actionButton').style.display = 'block';
-};
-
 	function showBlock(element) {
+          	    form = document.getElementById('form1');
+                document.getElementById('submit_button').type='button';
 	        data = '';
                 el = document.getElementById(element);
                 el.style.display = 'block';
                 el.classList.remove('js_window2');
                 var xmlHttp = new XMLHttpRequest();
 
-                var selector_sn = document.getElementsByName('sn');
-                var sn = selector_sn[0].value;
-
-                var input_user = document.getElementsByName('user');
-                var user = input_user[0].value;
-                if ( sn == '' ) {
+                if ( form.sn.value == '' ) {
                      el.classList.add('js_window2');
                      el.textContent = '$loc_entity_name_controller - $loc_common_phrase_must_be_filled';
                 } else {
-                let qs = `ha-json.php?mode=queue-command&cmd=del-key&sn=\${sn}&user=\${user}`;
+                let qs = form.action+'?mode='+form.mode.value+'&cmd='+form.cmd.value+'&sn='+form.sn.value+'&user='+form.user.value;
                 console.log(qs);
                 xmlHttp.open('GET', qs, true);
                 xmlHttp.send(null);
@@ -730,20 +731,27 @@ window.onload = function() {
                               el.textContent = json1['msg'];
                              console.log('back...');
                              setTimeout(() => { window.location.href = \"?tab=keys\"; }, 3600);
+                         } else {
+                             el.classList.add('js_window2');
                          }
                       }
                   }
                 }
 	    }
-	</script>".'<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="del-key">
-   '.$loc_entity_name_key.'  : <input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly>  /* '.htmlspecialchars($r['comment']).' */
-   '.$loc_common_phrase_sn.'   : '.create_controller_select('sn', '').'   /* Select controller serial number */
-
-   DB   : <a href="?tab=del_key_db&user_id='.$user_id.'"> '.$loc_susbys_delkeys_help1.'</a>
-   <input id="actionButton" type="button" value="'.$loc_entity_name_controller.': '.$loc_common_phrase_del.'/'.$loc_entity_name_key.'" onclick="showBlock(\'myShowBlock\')" style="display: none;" >
-   <noscript><input type="submit" value="'.$loc_entity_name_controller.': '.$loc_common_phrase_del.' '.$loc_entity_name_key.'-NO-JS"></noscript>
-          </form><Br/><Br/>
-          </pre><div class="js_window1" id="myShowBlock" style="display: none;"></div>';
+	</script>".'<form method="GET" action="ha-json.php" id="form1">
+	     <input type="hidden" name="mode" value="queue-command">
+	     <input type="hidden" name="cmd" value="del-key">
+<table>
+  <tr> <td>'.$loc_entity_name_key.'</td> <td><input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly></td></tr>
+  <tr> <td>'.$loc_property_name_description.'</td> <td>'.htmlspecialchars($r['comment']).'</td></tr>
+  <tr> <td>'.$loc_property_name_created.'</td> <td>'.$r['create_date'].'</td> </tr>
+  <tr> <td>'.$loc_common_phrase_sn.'</td> <td>'.create_controller_select('sn', '').'</td></tr>
+  <tr> <td>DB</td> <td><a href="?tab=del_key_db&user_id='.$user_id.'"> '.$loc_susbys_delkeys_help1.'</a></td></tr>
+  <tr> <td colspan="2">
+     <input type="submit" value="'.$loc_entity_name_controller.': '.$loc_common_phrase_del.' '.$loc_entity_name_key.'" id="submit_button" onclick="showBlock(\'myShowBlock\')">
+  </td></tr>
+</table></form>
+         <div class="js_window1" id="myShowBlock" style="display: none;"></div>';
           }
           break;
 
@@ -760,24 +768,20 @@ window.onload = function() {
                  .$r['key']." - $loc_susbys_delkeys_help1<Br/>$loc_susbys_delkeys_help2";
 
           $out .=  "<script type=\"text/javascript\">
-window.onload = function() {
-   document.getElementById('actionButton').style.display = 'block';
-};
-
 	function showBlock(element) {
-	        data = '';
+          	    form = document.getElementById('form1');
+                document.getElementById('submit_button').type='button';
+          data = '';
                 el = document.getElementById(element);
                 el.style.display = 'block';
                 el.classList.remove('js_window2');
                 var xmlHttp = new XMLHttpRequest();
 
-                var input_user = document.getElementsByName('user');
-                var user = input_user[0].value;
-                if ( user == '' ) {
+                if ( form.user.value == '' ) {
                      el.classList.add('js_window2');
                      el.textContent = '$loc_entity_name_key - $loc_common_phrase_must_be_filled';
                 } else {
-                let qs = `ha-json.php?mode=queue-command&cmd=del-key-from-db&user=\${user}`;
+                let qs =  form.action+'?mode='+form.mode.value+'&cmd='+form.cmd.value+'&user='+form.user.value;
                 console.log(qs);
                 xmlHttp.open('GET', qs, true);
                 xmlHttp.send(null);
@@ -789,20 +793,27 @@ window.onload = function() {
                          el.textContent = json1['err'];
                          console.log(json1['err'])
                          if ( json1['code'] == 0 ) {
-                              el.textContent = json1['msg'];
+                              el.textContent = json1['err'];
                              console.log('back...');
                              setTimeout(() => { window.location.href = \"?tab=keys\"; }, 3600);
+                         } else {
+                             el.classList.add('js_window2');
                          }
                       }
                   }
                 }
 	    }
-	</script>".'<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="del-key-from-db">
-   '.$loc_entity_name_key.'  : <input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly>  /* '.htmlspecialchars($r['comment']).' */
-    <input id="actionButton" type="button" value="'.$loc_menu_element_controllers.': '.$loc_common_phrase_del.'/'.$loc_entity_name_key.'" onclick="showBlock(\'myShowBlock\')" style="display: none;" >
-   <noscript><input type="submit" value="'.$loc_menu_element_controllers.': '.$loc_common_phrase_del.' '.$loc_entity_name_key.'-NO-JS"></noscript>
-          </form><Br/><Br/>
-          </pre><div class="js_window1" id="myShowBlock" style="display: none;">';
+	</script>".'<form method="GET" action="ha-json.php" id="form1">
+	    <input type="hidden" name="mode" value="queue-command">
+	    <input type="hidden" name="cmd" value="del-key-from-db">
+<table>
+   <tr> <td>'.$loc_entity_name_key.'</td> <td><input type=text name="user" value="'.htmlspecialchars($r['user']).'" readonly> </td></tr>
+   <tr> <td>'.$loc_property_name_description.'</td> <td>'.htmlspecialchars($r['comment']).' </td></tr>
+    <tr> <td colspan="2">
+      <input type="submit" value="'.$loc_menu_element_controllers.': '.$loc_common_phrase_del.' '.$loc_entity_name_key.'" id="submit_button" onclick="showBlock(\'myShowBlock\')">
+    </td></tr>
+</table></form>
+          <div class="js_window1" id="myShowBlock" style="display: none;">';
           }
           break;
 
@@ -850,7 +861,7 @@ window.onload = function() {
 
 
      case 'logins' :
-               if ($user_info['allow_manage_logins'] == 1) { $out .= '<a href="?tab=add_new_login">'.$loc_common_phrase_add.'</a>';
+               if ($user_info['allow_manage_logins'] == 1) { $out .= '<a href="?tab=add_new_login">'.$loc_common_phrase_add.'</a> ';
                     $q1 = mysqli_query($conn, "SELECT * FROM `logins` ");
                     if ( mysqli_num_rows($q1) == 0 ) { $out = "$loc_menu_element_logins :: $loc_common_phrase_not_found"; }
                     else {
@@ -937,27 +948,56 @@ window.onload = function() {
                $q1 = mysqli_query($conn, "SELECT * FROM `logins` WHERE `id` = '$id' LIMIT 1");
                $r = mysqli_fetch_assoc($q1);
 
-               $out .=  '<form method="POST">
-                    '.$loc_common_phrase_username.': <input type=text name="nname" value="'.$r['user'].'"> <a title="'.$loc_property_name_created.': '.$r['created_ts'].'; '."\n".$loc_property_name_last_activity.': '.$r['last_used_ts'].';">?</a><Br/>
-                    '.$loc_common_phrase_2fa.': '.create_twofactor_type_select('f_twofac', $r['twofactor_method']).' <Br/>
-                    '.$loc_common_phrase_email_address.':  <input type=text name="nemail" value="'.$r['email'].'"> <Br/>
-                    '.$loc_property_name_description.':  <input type=text name="ncomm" value="'.$r['comment'].'"> <Br/>
-                    '.int2checkbox ($r['enable'], 'f_enable', 0, '', "$loc_common_phrase_username, $loc_property_name_enable" ).'<Br/>
-                    '.$loc_common_phrase_password.': <input type="password" name="npswd"> <a title="LAST CHANGED '.$r['last_changed_password_ts'].'">?</a> <Br/>
-                    '.$loc_common_phrase_password.'(2): <input type="password" name="npswd2"> <Br/>
-                    '.$loc_property_name_ipsubnets.': <input type=text name="f_allowed_ip_range" value="'.$r['allowed_ip_range'].'">  <Br/>
-                    '.int2checkbox ($r['allow_open_door'], 'f_allow_open_door', 0, '', "$loc_property_name_access : $loc_susbys_open_door" ).' <Br/>
-                    '.int2checkbox ($r['allow_manage_controllers'], 'f_allow_manage_controllers', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_controllers" ).'  <Br/>
-                    '.int2checkbox ($r['allow_manage_keys'], 'f_allow_manage_keys', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_keys" ).'<Br/>
-                    '.int2checkbox ($r['allow_enroll_keys'], 'f_allow_enroll_keys', 0, '', "$loc_property_name_access : $loc_common_phrase_enroll, $loc_menu_element_keys/$loc_menu_element_controllers" ).'  <Br/>
-                    '.int2checkbox ($r['allow_manage_badkeys'], 'f_allow_manage_badkeys', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_badkeys" ).'   <Br/>
-                    '.int2checkbox ($r['allow_manage_offices'], 'f_allow_manage_offices', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_offices" ).'   <Br/>
-                    '.int2checkbox ($r['allow_manage_logins'], 'f_allow_manage_logins', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_logins" ).'  <Br/>
-                    '.int2checkbox ($r['allow_manage_options'], 'f_allow_manage_options', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_options" ).'   <Br/>
-                    '.int2checkbox ($r['allow_manage_proxy_events'], 'f_allow_manage_proxy_events', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_proxy_events" ).'  <Br/>
-                    <input type="submit" value="'.$loc_common_phrase_save.'">
-               </form><Br/><Br/>
-               <pre>';
+               $out .=  "<script>
+function hide_password (input_id, input_id2, link_id) {   // Password VISIBLE
+    el = document.getElementById(input_id);
+    el2 = document.getElementById(input_id2);
+    el3 = document.getElementById(link_id);
+    if (el.type == 'password')
+           { el.type = 'text'; el2.type = 'text';     el3.classList.add('red'); }
+      else { el.type = 'password'; el2.type = 'password';  el3.classList.remove('red'); }
+    }
+
+function check_pswds (input1, input2) {
+       i1 = document.getElementById(input1);
+       i2 = document.getElementById(input2);
+       if (i1.value != i2.value) {
+           i1.classList.add('red');
+           i2.classList.add('red');
+           i1.classList.remove('green');
+           i2.classList.remove('green');
+       } else {
+           i1.classList.remove('red');
+           i2.classList.remove('red');
+           i1.classList.add('green');
+           i2.classList.add('green');
+       };
+    }
+</script>".'<form method="POST">
+          <table>
+          <tr> <td>'.$loc_common_phrase_username.'</td> <td><input type=text name="nname" value="'.$r['user'].'"></td></tr>
+          <tr> <td>'.$loc_property_name_created.'</td> <td>'.$r['created_ts'].'</td></tr>
+          <tr> <td>'.$loc_property_name_last_activity.'</td> <td>'.$r['last_used_ts'].'</td></tr>
+          <tr> <td>'.$loc_common_phrase_2fa.'</td> <td>'.create_twofactor_type_select('f_twofac', $r['twofactor_method']).'</td></tr>
+          <tr> <td>'.$loc_common_phrase_email_address.'</td> <td><input type=text name="nemail" value="'.$r['email'].'"></td></tr>
+          <tr> <td>'.$loc_property_name_description.'</td> <td><input type=text name="ncomm" value="'.$r['comment'].'"></td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['enable'], 'f_enable', 0, '', "$loc_common_phrase_username, $loc_property_name_enable" ).'</td></tr>
+          <tr> <td>'.$loc_common_phrase_password.' ('.$r['last_changed_password_ts'].')</td> <td>
+                  <input type="password" name="npswd" id="npswd" onchange="check_pswds(\'npswd\', \'npswd2\')">
+                  <input type="password" name="npswd2" id="npswd2" onchange="check_pswds(\'npswd\', \'npswd2\')">
+                  <a onclick="hide_password(\'npswd\', \'npswd2\', \'f2_a\')" id="f2_a">***ꙭ</a></td></tr>
+          <tr> <td>'.$loc_property_name_ipsubnets.'</td> <td><input type=text size="42" name="f_allowed_ip_range" value="'.$r['allowed_ip_range'].'"></td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['allow_open_door'], 'f_allow_open_door', 0, '', "$loc_property_name_access : $loc_susbys_open_door" ).'</td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['allow_manage_controllers'], 'f_allow_manage_controllers', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_controllers" ).'</td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['allow_manage_keys'], 'f_allow_manage_keys', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_keys" ).'</td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['allow_enroll_keys'], 'f_allow_enroll_keys', 0, '', "$loc_property_name_access : $loc_common_phrase_enroll, $loc_menu_element_keys/$loc_menu_element_controllers" ).'</td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['allow_manage_badkeys'], 'f_allow_manage_badkeys', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_badkeys" ).'</td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['allow_manage_offices'], 'f_allow_manage_offices', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_offices" ).'</td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['allow_manage_logins'], 'f_allow_manage_logins', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_logins" ).'  </td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['allow_manage_options'], 'f_allow_manage_options', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_options" ).'</td></tr>
+          <tr> <td colspan="2">'.int2checkbox ($r['allow_manage_proxy_events'], 'f_allow_manage_proxy_events', 0, '', "$loc_property_name_access : $loc_common_phrase_manage, $loc_menu_element_proxy_events" ).'</td></tr>
+          <tr> <td colspan="2"><input type="submit" value="'.$loc_common_phrase_save.'"></td></tr>
+               </table></form>';
           } else { $out .= "$loc_common_phrase_disabled_user_profile"; }
           break;
 
@@ -984,7 +1024,7 @@ window.onload = function() {
 
 
      case 'badkeys' :
-               if ($user_info['allow_manage_badkeys'] == 1) { $out .= '<a href="?tab=add_badkey">'.$loc_common_phrase_add.'</a>'; };
+               if ($user_info['allow_manage_badkeys'] == 1) { $out .= '<a href="?tab=add_badkey">'.$loc_common_phrase_add.'</a> '; };
                $q1 = mysqli_query($conn, "SELECT * FROM `bad_keys` ");
                if ( mysqli_num_rows($q1) == 0 ) { $out = "$loc_menu_element_badkeys $loc_common_phrase_not_found"; }
                else {
@@ -1015,11 +1055,11 @@ window.onload = function() {
                     print '<META HTTP-EQUIV="REFRESH" CONTENT="0;URL=?tab=badkeys">';
                }
                $out .=  '<form method="POST">
-                    '.$loc_property_name_code.': <input type=text name="ncode"><Br/>
-                    '.$loc_property_name_description.': <input type=text name="nname"><Br/>
-                    <input type="submit" value="'.$loc_common_phrase_add.'">
-               </form><Br/><Br/>
-               <pre>';
+          <table>
+             <tr><td>'.$loc_property_name_code.'</td> <td><input type=text name="ncode" pattern="^[0-9A-F]{4},[0-9]{3},[0-9]{5}$"  placeholder="XXXX,ddd,ddddd"></td></tr>
+             <tr><td>'.$loc_property_name_description.'</td> <td><input type=text name="nname"></td></tr>
+             <tr><td colspan="2"><input type="submit" value="'.$loc_common_phrase_add.'"></td></tr>
+           </table></form>';
           } else { $out .= "$loc_common_phrase_disabled_user_profile"; }
           break;
 
@@ -1042,7 +1082,7 @@ window.onload = function() {
                $r = mysqli_fetch_assoc($q1);
 
                $out .=  '<form method="POST"><table class="small_table">
-                    <tr> <td>'.$loc_property_name_code.': </td><td> <input type=text name="ncode" value="'.htmlspecialchars($r['card']).'"> <font class="red">*</font> </td</tr>
+                    <tr> <td>'.$loc_property_name_code.': </td><td> <input type=text name="ncode" value="'.htmlspecialchars($r['card']).'" pattern="^[0-9A-F]{4},[0-9]{3},[0-9]{5}$"  placeholder="XXXX,ddd,ddddd"> <font class="red">*</font> </td</tr>
                     <tr> <td>'.$loc_property_name_code.' (HEX): </td><td> '.htmlspecialchars($r['card_hex']).'</td</tr>
                     <tr> <td>'.$loc_property_name_description.' </td><td> <input type=text name="ndesc" value="'.htmlspecialchars($r['description']).'"> </td</tr>
                     <tr> <td>'.$loc_property_name_enable.' </td><td> '.int2checkbox ($r['active'], 'nenab', 0, '', $loc_property_name_enable ).' </td</tr>
@@ -1184,9 +1224,11 @@ window.onload = function() {
                     <tr> <td>'.$loc_property_name_description.': </td><td> <input type=text name="nname" placeholder="info..."> </td</tr>
                     <tr> <td>'.$loc_property_name_enable.': </td><td> '.int2checkbox(0, 'nenable', 0, '', $loc_property_name_enable).' </td</tr>
 
-                    <tr> <td>'.$loc_property_name_url.': </td><td> <input type=text name="nurl" placeholder="site.net/my.php?device=[SN]&event=[EVENT_CODE]...&"> [SN] [HWTYPE] [EVENT_ID] [EVENT_CODE] [CARD] [CARD_HEX] [DATETIME] [LOGIN] [OFFICE] [IP]</td></tr>
+                    <tr> <td>'.$loc_property_name_url.': </td><td>
+                       <input type=text name="nurl" placeholder="site.net/my.php?device=[SN]&event=[EVENT_CODE]...&" size="42">
+                       <Br/>[SN] [HWTYPE] [EVENT_ID] [EVENT_CODE] [CARD] [CARD_HEX] [DATETIME] [LOGIN] [OFFICE] [IP]</td></tr>
                     <tr> <td>http-method </td><td> '.create_http_method_select('nmethod').' </td</tr>
-                    <tr> <td>raw-body </td><td> <input type=text name="nbody" placeholder="">  </td</tr>
+                    <tr> <td>raw-body </td><td> <input type=text name="nbody" placeholder="" size="42">  </td</tr>
                     <tr> <td> content-type </td><td> <input type=text name="ncontenttype" placeholder="header value..."> </td</tr>
                     <tr> <td colspan="2"> <input type="submit" value="'.$loc_common_phrase_add.'"> </td</tr>
                </table></form>';
@@ -1225,9 +1267,11 @@ window.onload = function() {
                     <tr> <td>'.$loc_property_name_description.': </td><td> <input type=text name="nname" placeholder="info..." value="'.$r['comment'].'"> </td</tr>
                     <tr> <td>'.$loc_property_name_enable.': </td><td> '.int2checkbox($r['enable'], 'nenable', 0, '', $loc_property_name_enable).' </td</tr>
 
-                    <tr> <td>'.$loc_property_name_url.': </td><td> <input type=text name="nurl" placeholder="site.net/my.php?device=[SN]&event=[EVENT_CODE]...&" value="'.$r['target_url'].'"> [SN] [HWTYPE] [EVENT_ID] [EVENT_CODE] [CARD] [CARD_HEX] [DATETIME] [LOGIN] [OFFICE] [IP]</td></tr>
+                    <tr> <td>'.$loc_property_name_url.': </td><td>
+                       <input type=text name="nurl" placeholder="site.net/my.php?device=[SN]&event=[EVENT_CODE]...&" value="'.$r['target_url'].'"  size="42">
+                       <Br/>[SN] [HWTYPE] [EVENT_ID] [EVENT_CODE] [CARD] [CARD_HEX] [DATETIME] [LOGIN] [OFFICE] [IP]</td></tr>
                     <tr> <td>http-method </td><td> '.create_http_method_select('nmethod', $r['target_method']).' </td</tr>
-                    <tr> <td>raw-body </td><td> <input type=text name="nbody" placeholder="" value="'.$r['target_raw_body'].'">  </td</tr>
+                    <tr> <td>raw-body </td><td> <input type=text name="nbody" placeholder="" value="'.$r['target_raw_body'].'" size="42">  </td</tr>
                     <tr> <td> content-type </td><td> <input type=text name="ncontenttype" placeholder="header value..." value="'.$r['target_content_type'].'"> </td</tr>
                     <tr> <td colspan="2"> <input type="submit" value="'.$loc_common_phrase_save.'"> </td</tr>
                </table></form>';
@@ -1254,9 +1298,9 @@ window.onload = function() {
                     <tr> <td>'.$loc_property_name_description.': </td><td> <input type=text disabled value="'.$r['comment'].'"> </td</tr>
                     <tr> <td>'.$loc_property_name_enable.': </td><td> '.int2checkbox($r['enable'], 'nenable', 1, '', $loc_property_name_enable).' </td</tr>
 
-                    <tr> <td>'.$loc_property_name_url.': </td><td> <input type=text name="nurl" readonly value="'.$r['target_url'].'"></td></tr>
+                    <tr> <td>'.$loc_property_name_url.': </td><td> <input type=text name="nurl" readonly value="'.$r['target_url'].'" size="42"></td></tr>
                     <tr> <td>http-method </td><td> '.create_http_method_select('disabled', $r['target_method']).' </td</tr>
-                    <tr> <td>raw-body </td><td> <input type=text name="nbody" disabled value="'.$r['target_raw_body'].'">  </td</tr>
+                    <tr> <td>raw-body </td><td> <input type=text name="nbody" disabled value="'.$r['target_raw_body'].'" size="42">  </td</tr>
                     <tr> <td> content-type </td><td> <input type=text name="ncontenttype" disabled value="'.$r['target_content_type'].'"> </td</tr>
                     <tr> <td colspan="2"> <input type="submit" value="'.$loc_common_phrase_del.'"> </td</tr>
                </table></form>';
@@ -1309,13 +1353,40 @@ window.onload = function() {
                               }
                               print '<META HTTP-EQUIV="REFRESH" CONTENT="0;URL=?tab='.$tab.'">';
                          }
-                    $out .= '<h3>'.$loc_menu_element_profile.'</h3>
-                    <form method="POST">
+                    $out .= "<script>
+          function hide_password(input_id, input_id2, link_id) {   // Password VISIBLE
+    el = document.getElementById(input_id);
+    el2 = document.getElementById(input_id2);
+    el3 = document.getElementById(link_id);
+    if (el.type == 'password')
+           { el.type = 'text'; el2.type = 'text';     el3.classList.add('red'); }
+      else { el.type = 'password'; el2.type = 'password';  el3.classList.remove('red'); }
+    }
+    function check_pswds (input1, input2) {
+       i1 = document.getElementById(input1);
+       i2 = document.getElementById(input2);
+       if (i1.value != i2.value) {
+           i1.classList.add('red');
+           i2.classList.add('red');
+           i1.classList.remove('green');
+           i2.classList.remove('green');
+       } else {
+           i1.classList.remove('red');
+           i2.classList.remove('red');
+           i1.classList.add('green');
+           i2.classList.add('green');
+       };
+    }
+          </script>".'<h3>'.$loc_menu_element_profile.'</h3>
+                    <form method="POST" name="form1">
                     <table>
                        <tr> <td>'.$loc_common_phrase_username.'</td> <td>'.$user_info['user'].'</td> </tr>
                        <tr> <td>'.$loc_common_phrase_email_address.'</td> <td> <input type="text" name="f_email" value="'.htmlspecialchars($user_info['email']).'"'.$mail_lock.'></td> </tr>
                        <tr> <td>'.$loc_property_name_description.'</td> <td> <input type="text" name="f_comment" value="'.htmlspecialchars($user_info['comment']).'"'.$comm_lock.'> </td> </tr>
-                       <tr> <td>'.$loc_common_phrase_password.'</td> <td> <input type="password" name="f_new_pswd1"'.$pswd_lock.'> <input type="password" name="f_new_pswd2"'.$pswd_lock.'> </td> </tr>
+                       <tr> <td>'.$loc_common_phrase_password.'</td>
+                            <td> <input type="password" id="f_new_pswd1" name="f_new_pswd1"'.$pswd_lock.' onchange="check_pswds(\'f_new_pswd1\', \'f_new_pswd2\')">
+                                 <input type="password" id="f_new_pswd2" name="f_new_pswd2"'.$pswd_lock.' onchange="check_pswds(\'f_new_pswd1\', \'f_new_pswd2\')">
+                                  <a onclick="hide_password(\'f_new_pswd1\', \'f_new_pswd2\', \'f2_a\')" id="f2_a">***ꙭ</a> </td> </tr>
                        <tr> <td>'.$loc_common_phrase_2fa.'</td> <td>'.$user_info['twofactor_method'].' <a href="?tab=twofactor">'.$loc_common_phrase_edit.'</a> </td> </tr>
                        <tr> <td>'.$loc_property_name_ipsubnets.'</td> <td> <input type="text" name="f_iprange" value="'.htmlspecialchars($user_info['allowed_ip_range']).'"'.$ipr_lock.'> </td> </tr>
                        <tr> <td>'.$loc_property_name_created.'</td> <td>'.$user_info['created_ts'].'</td> </tr>
