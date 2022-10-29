@@ -4,7 +4,8 @@
 
 Серверная веб-система для управления несколькими СКУД-контроллерами Z5RWeb.
 
-![ACSWebAdmin](https://user-images.githubusercontent.com/13812192/197417577-d8f43de0-e44c-4c1f-a1cb-e3614cf18826.png)
+![ACSWebAdmin](https://raw.githubusercontent.com/Aminuxer/ACSWebAdmin/master/www/doc/screenshot.png)
+![ACSWebAdmin_keys](https://raw.githubusercontent.com/Aminuxer/ACSWebAdmin/master/www/doc/screenshot_keys.png)
 
 ## Возможности
 * неограниченное число ключей
