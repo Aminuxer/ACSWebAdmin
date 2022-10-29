@@ -82,7 +82,7 @@
   $loc_susbys_open_door = 'افتح الباب';
 
   $loc_common_phrase_not_accessible = 'لا يمكن الوصول إليه';
-  $loc_common_phrase_ip_not_alllowed = 'هذا IP غير مسموح به';
+  $loc_common_phrase_ip_not_allowed = 'هذا IP غير مسموح به';
   $loc_common_phrase_disabled_global_options = 'معطل في الخيارات العالمية';
   $loc_common_phrase_disabled_user_profile = 'لا يمكن الوصول إليها لملف تعريف المستخدم';
   $loc_common_phrase_no_datarecords = 'لايوجد بيانات. أضف سجلًا واحدًا على الأقل.';

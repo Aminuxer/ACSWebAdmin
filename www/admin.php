@@ -818,43 +818,56 @@ ORDER BY of.name, uk.user");
           break;
 
      case 'open_door' :
-          $sn = mysqli_real_escape_string($conn, $_GET['sn']);
+          $sn      = mysqli_real_escape_string($conn, $_GET['sn']);
+          $hw_type = mysqli_real_escape_string($conn, $_GET['hw_type']);
           if (  check_ip_acl($remote_ip, $opts_restrict_open_door_ips) == 0 ) { $out = "$loc_common_phrase_ip_not_allowed :: $loc_common_phrase_disabled_global_options"; } else {
 
           $out = "<h3>$loc_susbys_open_door</h3>
-        <script type=\"text/javascript\">
-window.onload = function() {
-   document.getElementById('actionButton').style.display = 'block';
-};
-
+<script type=\"text/javascript\">
 	function showBlock(element) {
-	        data = '';
+          	    form = document.getElementById('form1');
+                document.getElementById('submit_button').type='button';
+          data = '';
                 el = document.getElementById(element);
+                el.style.display = 'block';
+                el.classList.remove('js_window2');
                 var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open('GET', 'ha-json.php?mode=queue-command&cmd=open-door&sn=$sn', true);
+
+                if ( form.sn.value == '' ) {
+                     el.classList.add('js_window2');
+                     el.textContent = '$loc_common_phrase_sn - $loc_common_phrase_must_be_filled';
+                } else {
+                let qs =  form.action+'?mode='+form.mode.value+'&cmd='+form.cmd.value+'&sn='+form.sn.value;
+                console.log(qs);
+                xmlHttp.open('GET', qs, true);
                 xmlHttp.send(null);
                 xmlHttp.onreadystatechange = function() {
                       if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
                       data = xmlHttp.responseText;
                       if ( data != '' ) {
                          json1 =  JSON.parse(data)
-                         el.textContent = json1['msg'];
-                         console.log(json1['msg'])
+                         el.textContent = json1['err'];
+                         console.log(json1['err'])
+                         if ( json1['code'] == 0 ) {
+                              el.textContent = json1['msg'];
+                             console.log('back...');
+                             setTimeout(() => { window.location.href = \"?tab=open_door&sn=$sn&hw_type=$hw_type\"; }, 3600);
+                         } else {
+                             el.classList.add('js_window2');
+                         }
                       }
-                }
-
-                if ( el != null) {
-                         el.style.display = 'block';
-                         setTimeout(() => { el.style.display = 'none'; }, 5000);
+                  }
                 }
 	    }
 	</script>";
 
-          $out .=  '<pre><form method="GET" action="ha-json.php"> <input type="hidden" name="mode" value="queue-command"> <input type="hidden" name="cmd" value="open-door">
-          '.$loc_common_phrase_sn.' : <input type="text" name="sn" value="'.$sn.'" readonly>
-          <input id="actionButton" type="button" value="'.$loc_susbys_open_door.'" onclick="showBlock(\'myShowBlock\')" style="display: none;" >
-          <noscript> <input type="submit" value="'.$loc_susbys_open_door.'-NO-JS"> </noscript>
-          </form></pre>
+          $out .=  '<form method="GET" action="ha-json.php" id="form1">
+                     <input type="hidden" name="mode" value="queue-command">
+                     <input type="hidden" name="cmd" value="open-door">
+          '.$loc_common_phrase_sn.' : <input type="text" name="sn" value="'.$sn.'" readonly> <Br/>
+
+          <input type="submit" value="'.$loc_susbys_open_door.'" id="submit_button" onclick="showBlock(\'myShowBlock\')">
+          </form>
           <div class="js_window1" id="myShowBlock" style="display: none;"></div>';
           }
           break;

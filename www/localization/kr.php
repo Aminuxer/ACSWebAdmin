@@ -82,7 +82,7 @@
   $loc_susbys_open_door = '문을 열어';
 
   $loc_common_phrase_not_accessible = '접근 불가';
-  $loc_common_phrase_ip_not_alllowed = '이 IP는 허용되지 않습니다';
+  $loc_common_phrase_ip_not_allowed = '이 IP는 허용되지 않습니다';
   $loc_common_phrase_disabled_global_options = '전역 옵션에서 비활성화';
   $loc_common_phrase_disabled_user_profile = '사용자가 액세스할 수 없음';
   $loc_common_phrase_no_datarecords = '데이터가 없습니다. 하나 이상의 레코드를 추가하십시오.';

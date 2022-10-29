@@ -82,7 +82,7 @@
   $loc_susbys_open_door = '打开门';
 
   $loc_common_phrase_not_accessible = '无法访问';
-  $loc_common_phrase_ip_not_alllowed = '这个IP不允许';
+  $loc_common_phrase_ip_not_allowed = '这个IP不允许';
   $loc_common_phrase_disabled_global_options = '在全局选项中禁用';
   $loc_common_phrase_disabled_user_profile = '此用户无法访问';
   $loc_common_phrase_no_datarecords = '没有数据。 添加至少一条记录。';

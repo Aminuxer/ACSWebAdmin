@@ -82,7 +82,7 @@
   $loc_susbys_open_door = 'Ouvre la porte';
 
   $loc_common_phrase_not_accessible = 'pas accessible';
-  $loc_common_phrase_ip_not_alllowed = 'cette IP n\'est pas autorisée';
+  $loc_common_phrase_ip_not_allowed = 'cette IP n\'est pas autorisée';
   $loc_common_phrase_disabled_global_options = 'désactivé dans les options globales';
   $loc_common_phrase_disabled_user_profile = 'inaccessible pour le profil utilisateur';
   $loc_common_phrase_no_datarecords = 'Pas de données. Ajoutez au moins un enregistrement.';

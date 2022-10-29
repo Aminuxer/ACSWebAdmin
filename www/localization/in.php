@@ -82,7 +82,7 @@
   $loc_susbys_open_door = 'दरवाजा खाेलें';
 
   $loc_common_phrase_not_accessible = 'पहुँच से दूर';
-  $loc_common_phrase_ip_not_alllowed = 'इस आईपी की अनुमति नहीं है';
+  $loc_common_phrase_ip_not_allowed = 'इस आईपी की अनुमति नहीं है';
   $loc_common_phrase_disabled_global_options = 'वैश्विक विकल्पों में अक्षम';
   $loc_common_phrase_disabled_user_profile = 'उपयोगकर्ता के लिए दुर्गमы';
   $loc_common_phrase_no_datarecords = 'कोई डेटा नहीं। कम से कम एक रिकॉर्ड जोड़ें।';

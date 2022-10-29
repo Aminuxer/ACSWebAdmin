@@ -82,7 +82,7 @@
   $loc_susbys_open_door = 'Öffne die Tür';
 
   $loc_common_phrase_not_accessible = 'nicht zugänglich';
-  $loc_common_phrase_ip_not_alllowed = 'diese IP nicht erlaubt';
+  $loc_common_phrase_ip_not_allowed = 'diese IP nicht erlaubt';
   $loc_common_phrase_disabled_global_options = 'in den globalen Optionen deaktiviert';
   $loc_common_phrase_disabled_user_profile = 'unzugänglich für Benutzerprofil';
   $loc_common_phrase_no_datarecords = 'Keine Daten. Fügen Sie mindestens einen Datensatz hinzu.';
@@ -132,7 +132,7 @@
   $loc_common_phrase_logout = 'Ausloggen';
   $loc_common_phrase_send = 'Senden';
   $loc_common_phrase_username = 'Anmeldung';
-  $loc_common_phrase_password = 'Kennwort';
+  $loc_common_phrase_password = 'Passwort';
   $loc_common_phrase_email_address = 'Email';
   $loc_common_phrase_not_active = 'NICHT AKTIV';
   $loc_common_phrase_always = 'Stets';

@@ -82,7 +82,7 @@
   $loc_susbys_open_door = 'ドアを開ける';
 
   $loc_common_phrase_not_accessible = '接続できない';
-  $loc_common_phrase_ip_not_alllowed = 'この IP は許可されていません';
+  $loc_common_phrase_ip_not_allowed = 'この IP は許可されていません';
   $loc_common_phrase_disabled_global_options = 'グローバルオプションで無効';
   $loc_common_phrase_disabled_user_profile = 'ユーザーはアクセスできません';
   $loc_common_phrase_no_datarecords = 'データなし。 少なくとも 1 つのレコードを追加します。';
