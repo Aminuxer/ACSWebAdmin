@@ -4,7 +4,8 @@
 
 Server-side Web-based system for mass-management Z5RWeb ACS controllers.
 
-![ACSWebAdmin](https://user-images.githubusercontent.com/13812192/197417577-d8f43de0-e44c-4c1f-a1cb-e3614cf18826.png)
+![ACSWebAdmin_keys](https://raw.githubusercontent.com/Aminuxer/ACSWebAdmin/master/www/doc/screenshot_keys.png)
+![ACSWebAdmin](https://raw.githubusercontent.com/Aminuxer/ACSWebAdmin/master/www/doc/screenshot.png)
 
 ## Features
 * Unlimited keys
