@@ -76,7 +76,8 @@ if ( isset($_SESSION['user']) AND $_SESSION['user'] != '' AND $_SESSION['control
      $tab = 'no_access';
      $hide_menu = 1;
      $logged_user = '';
-     if ( $opts_allow_passwd_email_recovery == 1 ) { $out .= '<div class="passwd_email_recovery"><a href="password-recovery.php?user='.htmlspecialchars($u).'">'.$loc_susbys_email_pswd_recovery.'</a></div>'; }
+     if ( $opts_allow_passwd_email_recovery == 1 ) { $out .= '<div class="passwd_email_recovery">
+           <a href="password-recovery.php?user='.htmlspecialchars($u).'" onclick="return confirm(\''.$loc_susbys_email_pswd_recovery.' ?\')">'.$loc_susbys_email_pswd_recovery.'</a></div>'; }
      if ( $opts_show_anonym_stat == 1 AND check_ip_acl($remote_ip, $opts_restrict_anonim_view_ips) != 0 ) {   // Anonymous statistics IF ENABLED IN OPTIONS
           $out .= get_statistic();
      }
