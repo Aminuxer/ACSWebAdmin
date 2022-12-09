@@ -566,10 +566,9 @@ ORDER BY of.name, uk.user");
                       data = xmlHttp.responseText;
                       if ( data != '' ) {
                          json1 =  JSON.parse(data)
-                         el.textContent = json1['err'];
-                         console.log(json1['err'])
+                         el.textContent = json1['msg'];
+                         console.log(json1['msg'])
                          if ( json1['code'] == 0 ) {
-                              el.textContent = json1['msg'];
                              console.log('back...');
                              setTimeout(() => { window.location.href = \"?tab=keys\"; }, 3600);
                          } else {
@@ -997,8 +996,8 @@ function check_pswds (input1, input2) {
           <tr> <td>'.$loc_property_name_description.'</td> <td><input type=text name="ncomm" value="'.$r['comment'].'"></td></tr>
           <tr> <td colspan="2">'.int2checkbox ($r['enable'], 'f_enable', 0, '', "$loc_common_phrase_username, $loc_property_name_enable" ).'</td></tr>
           <tr> <td>'.$loc_common_phrase_password.' ('.$r['last_changed_password_ts'].')</td> <td>
-                  <input type="password" name="npswd" id="npswd" onchange="check_pswds(\'npswd\', \'npswd2\')">
-                  <input type="password" name="npswd2" id="npswd2" onchange="check_pswds(\'npswd\', \'npswd2\')">
+                  <input type="password" name="npswd" id="npswd" onkeyup="check_pswds(\'npswd\', \'npswd2\')">
+                  <input type="password" name="npswd2" id="npswd2" onkeyup="check_pswds(\'npswd\', \'npswd2\')">
                   <a onclick="hide_password(\'npswd\', \'npswd2\', \'f2_a\')" id="f2_a">***ꙭ</a></td></tr>
           <tr> <td>'.$loc_property_name_ipsubnets.'</td> <td><input type=text size="42" name="f_allowed_ip_range" value="'.$r['allowed_ip_range'].'"></td></tr>
           <tr> <td colspan="2">'.int2checkbox ($r['allow_open_door'], 'f_allow_open_door', 0, '', "$loc_property_name_access : $loc_susbys_open_door" ).'</td></tr>
@@ -1398,8 +1397,8 @@ function check_pswds (input1, input2) {
                        <tr> <td>'.$loc_common_phrase_email_address.'</td> <td> <input type="text" name="f_email" value="'.htmlspecialchars($user_info['email']).'"'.$mail_lock.'></td> </tr>
                        <tr> <td>'.$loc_property_name_description.'</td> <td> <input type="text" name="f_comment" value="'.htmlspecialchars($user_info['comment']).'"'.$comm_lock.'> </td> </tr>
                        <tr> <td>'.$loc_common_phrase_password.'</td>
-                            <td> <input type="password" id="f_new_pswd1" name="f_new_pswd1"'.$pswd_lock.' onchange="check_pswds(\'f_new_pswd1\', \'f_new_pswd2\')">
-                                 <input type="password" id="f_new_pswd2" name="f_new_pswd2"'.$pswd_lock.' onchange="check_pswds(\'f_new_pswd1\', \'f_new_pswd2\')">
+                            <td> <input type="password" id="f_new_pswd1" name="f_new_pswd1"'.$pswd_lock.' onkeyup="check_pswds(\'f_new_pswd1\', \'f_new_pswd2\')">
+                                 <input type="password" id="f_new_pswd2" name="f_new_pswd2"'.$pswd_lock.' onkeyup="check_pswds(\'f_new_pswd1\', \'f_new_pswd2\')">
                                   <a onclick="hide_password(\'f_new_pswd1\', \'f_new_pswd2\', \'f2_a\')" id="f2_a">***ꙭ</a> </td> </tr>
                        <tr> <td>'.$loc_common_phrase_2fa.'</td> <td>'.$user_info['twofactor_method'].' <a href="?tab=twofactor">'.$loc_common_phrase_edit.'</a> </td> </tr>
                        <tr> <td>'.$loc_property_name_ipsubnets.'</td> <td> <input type="text" name="f_iprange" value="'.htmlspecialchars($user_info['allowed_ip_range']).'"'.$ipr_lock.'> </td> </tr>
@@ -1586,12 +1585,17 @@ if ($tab !='login' and $tab !='logout' AND isset($_SESSION['user']) AND $_SESSIO
 }
 
 if ( $tab == '' ) {     # // MAIN DEFAULT TAB
+
+     if ($localization == '' or $localization == 'ru') { $help_file_suffix =  ''; } else { $help_file_suffix = "_en"; };
+
      $out .= "\n<div class=\"greeting_div\"><h3>".htmlspecialchars($opts_global_sysname)."</h3>
        <span>$loc_susbys_greeting</span><Br/>
        <span>$loc_common_phrase_username: $logged_user</span><Br/>
        <span>IP: $remote_ip</span><Br/>
        <span>$loc_common_phrase_2fa: ".htmlspecialchars($user_info['twofactor_method'])."</span><Br/>
-       <span>$opts__int__sys__version</span>
+       <span>$opts__int__sys__version</span><Br/>
+             <Br/>
+       <span> <a href=\"doc/readme$help_file_suffix.html\" target=\"_blank\">$loc_common_phrase_help</a> </span>
      </div>\n".get_statistic()."\n";
 };
 

@@ -80,6 +80,7 @@
   $loc_susbys_2fa_help2 = 'Подпишите тестовую строку вашим крипто-кошельком';
   $loc_susbys_open_door = 'Открытие двери';
 
+  
   $loc_common_phrase_not_accessible = 'не доступно';
   $loc_common_phrase_ip_not_allowed = 'этот IP не разрешён';
   $loc_common_phrase_disabled_global_options = 'выключено в глобальных настройках';
@@ -136,6 +137,7 @@
   $loc_common_phrase_not_active = 'НЕ АКТИВЕН';
   $loc_common_phrase_always = 'Всегда';
   $loc_common_phrase_never = 'Никогда';
+  $loc_common_phrase_help = 'Помощь';
 
   $loc_common_phrase_must_be_filled = 'должны быть заполнены';
   $loc_common_phrase_not_found = 'не найдены';

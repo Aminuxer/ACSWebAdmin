@@ -137,6 +137,7 @@
   $loc_common_phrase_not_active = 'غير نشيط';
   $loc_common_phrase_always = 'دائماً';
   $loc_common_phrase_never = 'أبداً';
+  $loc_common_phrase_help = 'يساعد';
 
   $loc_common_phrase_must_be_filled = 'يجب أن يملأ';
   $loc_common_phrase_not_found = 'لم يتم العثور على';

@@ -137,6 +137,7 @@
   $loc_common_phrase_not_active = '不活跃';
   $loc_common_phrase_always = '总是';
   $loc_common_phrase_never = '决不';
+  $loc_common_phrase_help = '帮助';
 
   $loc_common_phrase_must_be_filled = '必须填写';
   $loc_common_phrase_not_found = '未找到';

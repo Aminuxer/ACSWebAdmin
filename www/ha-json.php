@@ -171,21 +171,21 @@ if ( $mode == 'queue-command' ) {
                         elseif ($newkey == '') { $ret_json = '{ "code": 6, "err": "New key must be specified as HEXX,EMM,MARIN" } '; }
                         else {
                                 if ( $q00_numrows == 0 ) {
-                                     mysqli_query($conn, "INSERT INTO `user_keys` (`key`, `type`, `access`, `user`, `comment`, `photo_url`, `create_date`)
+                                        mysqli_query($conn, "INSERT INTO `user_keys` (`key`, `type`, `access`, `user`, `comment`, `photo_url`, `create_date`)
                                                          VALUES ('$newkey', 'SIMPLE', '255', '$user', '$user', '', NOW()) ");
-                                }
-                                $nk_hex = mixed_hex_marine_2_pure_hex($newkey);
-                                $ret_json = '{ "code": 69, "err": "BAD KEY; '.$newkey.'; HEX: '.$nk_hex.'" } ';
-                                if ( $nk_hex == '000000000000') { $ret_json = '{ "code": 7, "err": "BAD KEY; New key must be specified as HEXX,XXX,YYYYY" } '; }
-                                else {
-                                        $flags = 0;
-                                        if (strlen($newkey) == 9) { $flags += 32; };
-                                        $json_out_cmd = '{ "id": '.$ts.',"operation":"add_cards","cards": [{"card": "'.$nk_hex.'","flags": '.$flags.', "tz": 255}]}';
-                                        $q1 = "INSERT INTO `queue_commands` (`sn`, `hw_type`, `command`, `executer`, `ip`) VALUES ('$sn', 'Z5RWEB', '$json_out_cmd', '0', INET_ATON('$ip') ) ";
-                                        $q1 = mysqli_query($conn, $q1) or print mysqli_error($conn);
-                                        if ( !mysqli_error($conn) ) { $ret_code = 0; $msg = 'OK'; } else { $ret_code = mysqli_errno($conn); $msg = mysqli_error($conn); };
-                                        $ret_json = '{ "code": '.$ret_code.', "msg": "'.$msg.'" }';
-                                }
+                                        $nk_hex = mixed_hex_marine_2_pure_hex($newkey);
+                                        $ret_json = '{ "code": 69, "err": "BAD KEY; '.$newkey.'; HEX: '.$nk_hex.'" } ';
+                                        if ( $nk_hex == '000000000000') { $ret_json = '{ "code": 7, "err": "BAD KEY; New key must be specified as HEXX,XXX,YYYYY" } '; }
+                                        else {
+                                                $flags = 0;
+                                                if (strlen($newkey) == 9) { $flags += 32; };
+                                                $json_out_cmd = '{ "id": '.$ts.',"operation":"add_cards","cards": [{"card": "'.$nk_hex.'","flags": '.$flags.', "tz": 255}]}';
+                                                $q1 = "INSERT INTO `queue_commands` (`sn`, `hw_type`, `command`, `executer`, `ip`) VALUES ('$sn', 'Z5RWEB', '$json_out_cmd', '0', INET_ATON('$ip') ) ";
+                                                $q1 = mysqli_query($conn, $q1) or print mysqli_error($conn);
+                                                if ( !mysqli_error($conn) ) { $ret_code = 0; $msg = 'OK'; } else { $ret_code = mysqli_errno($conn); $msg = mysqli_error($conn); };
+                                                $ret_json = '{ "code": '.$ret_code.', "msg": "'.$msg.'" }';
+                                        }
+                                } else { $ret_json = '{ "code": 7, "msg": "New name of key conflict with another user" }'; };
                         }
             };
     }

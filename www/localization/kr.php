@@ -137,6 +137,7 @@
   $loc_common_phrase_not_active = '활성화되지 않은';
   $loc_common_phrase_always = '언제나';
   $loc_common_phrase_never = '절대';
+  $loc_common_phrase_help = '돕다';
 
   $loc_common_phrase_must_be_filled = '채워야 한다';
   $loc_common_phrase_not_found = '찾을 수 없음';

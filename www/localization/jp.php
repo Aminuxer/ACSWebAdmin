@@ -137,6 +137,7 @@
   $loc_common_phrase_not_active = '非活動中';
   $loc_common_phrase_always = '常に';
   $loc_common_phrase_never = '決して';
+  $loc_common_phrase_help = 'ヘルプ';
 
   $loc_common_phrase_must_be_filled = '満たさなければならない';
   $loc_common_phrase_not_found = '見つかりません';

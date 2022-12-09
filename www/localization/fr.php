@@ -137,6 +137,7 @@
   $loc_common_phrase_not_active = 'PAS ACTIF';
   $loc_common_phrase_always = 'Toujours';
   $loc_common_phrase_never = 'Jamais';
+  $loc_common_phrase_help = 'aider';
 
   $loc_common_phrase_must_be_filled = 'doit être rempli';
   $loc_common_phrase_not_found = 'pas trouvé';

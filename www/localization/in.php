@@ -137,6 +137,7 @@
   $loc_common_phrase_not_active = 'अक्रिय';
   $loc_common_phrase_always = 'हमेशा';
   $loc_common_phrase_never = 'कभी नहीँ';
+  $loc_common_phrase_help = 'मदद करना';
 
   $loc_common_phrase_must_be_filled = 'भरा जाना आवश्यक';
   $loc_common_phrase_not_found = 'पता नहीं चला';
