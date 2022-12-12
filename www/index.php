@@ -173,7 +173,7 @@ $json = json_decode($raw_post_data, true);
                            $f_url = str_replace('[EVENT_CODE]', $event_code, $f_url);
                            $f_url = str_replace('[CARD]', $event['card'], $f_url);
                            $f_url = str_replace('[CARD_HEX]', $emmarine_code, $f_url);
-                           $f_url = str_replace('[DATETIME]', $event_time, $f_url);
+                           $f_url = str_replace('[DATETIME]', rawurlencode($event_time), $f_url);
                            $f_url = str_replace('[IP]', $remote_ip, $f_url);
 
                            $f_body = str_replace('[SN]', $sn, $f_body);
