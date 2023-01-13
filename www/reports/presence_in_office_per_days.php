@@ -5,14 +5,16 @@
                 <input type="hidden" name="tab" value="reports">
                 <input type="hidden" name="report" value="'.$report.'">
        <input type="date" name="date1" min="1970-01-01" value="'.date("Y-m-d").'">
-       <input type="date" name="date2" min="1970-01-01" value="'.date("Y-m-d").'">
-       '.create_office_select('office').'
+       <input type="date" name="date2" min="1970-01-01" value="'.date("Y-m-d").'"> <Br/>
+       <input type="checkbox" name="show_csv" id="show_csv_lbl"> <label for="show_csv_lbl">CSV</label> <Br/>
+       '.$loc_entity_name_office.' '.create_office_select('office').' <Br/>
        <input type="submit">
     </form>';
   } else {
     $date1 = mysqli_real_escape_string($conn, $_GET['date1']);
     $date2 = mysqli_real_escape_string($conn, $_GET['date2']);
     $office = (int)$_GET['office'];
+    $csv = isset ($_GET['show_csv']) ? $_GET['show_csv'] : 0;
 
     $out .= htmlspecialchars("$date1 .. $date2");
 
@@ -30,7 +32,11 @@ WHERE
 GROUP BY office, uk.user, mts, dts
 ORDER BY office, uk.user, mts ASC, dts ASC");
 
-    $out .= '<table>';
+    if ( $csv == 'on' ) { $out = "<textarea cols=\"160\" rows=\"40\">\n\"$humanity_name\",\"$date1\",\"$date2\"
+\"$loc_entity_name_office\", \"$loc_entity_name_username\",";
+    } else {
+       $out .= '<table>';
+    };
 
     $months = array();
     $users = array();
@@ -47,14 +53,14 @@ ORDER BY office, uk.user, mts ASC, dts ASC");
 
     $mm = $dd = '';
     foreach ( $months as $m => $d ) {
-         $mm .= "<th colspan=\"".count($months[$m])."\">$m</th>";
-         foreach ( $d as $didx => $cu_day ) {
-           $dd .= "<th>$didx</th>";
-        }
+           if ( $csv != 'on' ) { $mm .= "<th colspan=\"".count($months[$m])."\">$m</th>"; };
+           foreach ( $d as $didx => $cu_day ) {
+             if ( $csv == 'on' ) { $out .= "\"$m-$didx\","; } else { $dd .= "<th>$didx</th>"; };
+           }
     };
 
-    $out .= '<tr> <th rowspan="2">'.$loc_entity_name_office.'</th> <th rowspan="2">'.$loc_entity_name_username.'</th> '.$mm.'
-             <tr> '.$dd.' </tr>';
+    if ( $csv != 'on' ) { $out .= '<tr> <th rowspan="2">'.$loc_entity_name_office.'</th> <th rowspan="2">'.$loc_entity_name_username.'</th> '.$mm.'
+             <tr> '.$dd.' </tr>'; };
 
     foreach ( $users as $user ) {
        $cu_user = $user['u'];
@@ -64,17 +70,17 @@ ORDER BY office, uk.user, mts ASC, dts ASC");
           foreach ( $d as $didx => $cu_day ) {
               $pres = $cu_day['users'];
               if ( isset ($pres[$cu_user]) and $pres[$cu_user] == 1 ) { $udata = '+'; } else { $udata = ''; };
-              $pres_tds .= "<td>$udata</td>";
+              if ( $csv == 'on' ) { $pres_tds .= "\"$udata\","; } else { $pres_tds .= "<td>$udata</td>"; };
           }
        };
-       $out .= '<tr>
-          <td>'.htmlspecialchars($cu_office).'</td>
-          <td>'.htmlspecialchars($cu_user).'</td>
-          '.$pres_tds.'
-        </tr>';
+       if ( $csv == 'on' ) {
+         $out .= "\n\"".htmlspecialchars($cu_office).'","'.htmlspecialchars($cu_user).'",'.$pres_tds;
+       } else {
+          $out .= '<tr> <td>'.htmlspecialchars($cu_office).'</td> <td>'.htmlspecialchars($cu_user).'</td>'.$pres_tds.'</tr>';
+       };
     }
 
-    $out .= '</table>';
+    if ( $csv == 'on' ) { $out .= '</textarea>'; } else { $out .= '</table>'; };
   }
 
 ?>
