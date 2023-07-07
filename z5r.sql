@@ -220,7 +220,9 @@ INSERT INTO `options` (`id`, `abbr`, `value`, `type`) VALUES
 (15,	'opts_allow_passwd_email_recovery',	'1',	'b'),
 (16,	'opts_global_sysname',	'СКУД-админка / ACS WebAdmin',	't'),
 (17,	'opts_email_recovery_from',	'ACS/СКУД Password <no-reply@localhost>',	't'),
-(18,	'opts_email_recovery_use_captcha',	'1',	'b');
+(18,	'opts_email_recovery_use_captcha',	'1',	'b'),
+(19,	'opts_global_records_per_page',	'50',	'i');
+
 
 CREATE TABLE `proxy_events` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
