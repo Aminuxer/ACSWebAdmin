@@ -20,6 +20,7 @@
   $loc_opts_allow_autoreg_auto_ip_filt = 'При авторегистрации контроллеров сразу привязывать их к IP';
   $loc_opts_hardware_z5r_interval = 'Интервал опроса контроллеров Z5R-Web';
   $loc_opts_global_sysname = 'Название системы';
+  $loc_opts_global_records_per_page = 'Число записей на страницу';
   $loc_opts_email_recovery_from = 'Адрес отправителя для писем восстановления пароля';
   $loc_opts_allow_profile_edit_pswd = 'Разрешать пользователям менять свой пароль';
   $loc_opts_allow_profile_edit_iprange = 'Разрешать пользователям менять свой диапазон доступных IP';

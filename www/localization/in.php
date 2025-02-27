@@ -20,6 +20,7 @@
   $loc_opts_allow_autoreg_auto_ip_filt = 'नियंत्रकों के स्वत: पंजीकरण में इसे आईपी से बांधें';
   $loc_opts_hardware_z5r_interval = 'Z5R-वेब के लिए मतदान अंतराल';
   $loc_opts_global_sysname = 'सिस्टम का नाम';
+  $loc_opts_global_records_per_page = 'प्रति पृष्ठ पंक्तियाँ';
   $loc_opts_email_recovery_from = 'पासवर्ड पुनर्प्राप्ति ईमेल के लिए पता प्रेषक';
   $loc_opts_allow_profile_edit_pswd = 'उपयोगकर्ताओं को स्वयं पासवर्ड बदलने दें';
   $loc_opts_allow_profile_edit_iprange = 'उपयोगकर्ताओं को स्व-अनुमत आईपी बदलने की अनुमति दें';

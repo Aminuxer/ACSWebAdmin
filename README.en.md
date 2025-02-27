@@ -44,6 +44,10 @@ We greeting pull-requests with new language localizations.
 * Open web-server path in browser and try login under login admin with empty password.
 At first login your must change password.
 
+* If you want to clear old records add call script _cron.php to sheduler.
+Inside script _cron.php you can edit retention time.
+
+
 ## Usage
 * Create operators logins an assign access rights.
 * For connect controller open Z5RWeb web-interface, select work-mode WEB-JSON.

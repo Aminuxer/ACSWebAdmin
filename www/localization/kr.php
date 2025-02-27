@@ -20,6 +20,7 @@
   $loc_opts_allow_autoreg_auto_ip_filt = '컨트롤러에서 자동 등록은 이것을 IP에 바인딩합니다.';
   $loc_opts_hardware_z5r_interval = 'Z5R-Web의 폴링 간격';
   $loc_opts_global_sysname = '시스템 이름';
+  $loc_opts_global_records_per_page = '페이지당 행 수';
   $loc_opts_email_recovery_from = '비밀번호 복구 이메일 주소 발신자';
   $loc_opts_allow_profile_edit_pswd = '사용자가 자신의 암호를 변경하도록 허용';
   $loc_opts_allow_profile_edit_iprange = '사용자가 자체 허용 IP 변경 허용';

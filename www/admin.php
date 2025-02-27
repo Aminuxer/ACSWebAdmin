@@ -471,6 +471,15 @@ ORDER BY of.name, uk.user");
      case 'list_events' :
           $sn = mysqli_real_escape_string($conn, $_GET['sn']);
           $hw = mysqli_real_escape_string($conn, $_GET['hw_type']);
+
+          $page = isset ($_GET['page']) ? (int)$_GET['page'] : 1;
+          $f_code = isset ($_GET['f_code']) ? htmlspecialchars($_GET['f_code']) : '';
+          $f_key = isset ($_GET['f_key']) ? htmlspecialchars($_GET['f_key']) : '';
+          $f_time = isset ($_GET['f_time']) ? htmlspecialchars($_GET['f_time']) : '';
+          $f_user = isset ($_GET['f_user']) ? htmlspecialchars($_GET['f_user']) : '';
+          $f_event = isset ($_GET['f_event']) ? htmlspecialchars($_GET['f_event']) : '';
+          $f_ip = isset ($_GET['f_ip']) ? htmlspecialchars($_GET['f_ip']) : '';
+
           $q0 = mysqli_query($conn, "SELECT cn.name AS controller_name, of.name AS office_name, cn.hw_type
              FROM `controller_names` cn
              LEFT JOIN offices of ON of.id = cn.office_id
@@ -478,26 +487,58 @@ ORDER BY of.name, uk.user");
           if ( mysqli_num_rows($q0) > 0 ) {
                $r0 = mysqli_fetch_assoc($q0);
                $out =  "<h3>$loc_susbys_list_events, ".$r0['hw_type']." ".htmlspecialchars($r0['controller_name']).", ".htmlspecialchars($r0['office_name']).", $loc_common_phrase_sn: ".htmlspecialchars($sn)."</h3>";
-               $q1 = mysqli_query($conn, "SELECT  e.id, e.event_code, e.card, e.card_hex, e.ts, e.internal_id, ec.name, ec.severity_color, uk.type, uk.access, uk.user, INET_NTOA(src_ip) AS src_ip
+
+               $sql_filt = '';
+               if ($f_code != '') { $sql_filt .= " AND `e`.`event_code` ='".((int)$f_code)."'"; };
+               if ($f_key != '') { $sql_filt .= " AND ( `e`.`card` LIKE '%".mysqli_real_escape_string($conn, $f_key)."%'
+                                                 OR `e`.`card_hex` LIKE '%".mysqli_real_escape_string($conn, $f_key)."%' )"; };
+               if ($f_time != '') { $sql_filt .= " AND `e`.`ts` LIKE '%".mysqli_real_escape_string($conn, $f_time)."%' "; };
+               if ($f_user != '') { $sql_filt .= " AND `uk`.`user` LIKE '%".mysqli_real_escape_string($conn, $f_user)."%' "; };
+               if ($f_event != '') { $sql_filt .= " AND `ec`.`name` LIKE '%".mysqli_real_escape_string($conn, $f_event)."%' "; };
+               if ($f_ip != '') { $sql_filt .= " AND `e`.`src_ip` = INET_ATON('".mysqli_real_escape_string($conn, $f_ip)."') "; };
+
+               $q002 = mysqli_query($conn, "SELECT COUNT(e.id) AS cnt
                          FROM `events` e
                               LEFT JOIN event_codes ec ON ec.id = e.event_code
                               LEFT JOIN user_keys uk ON uk.key = e.card
-                         WHERE e.sn = '$sn' AND e.hw_type = '$hw' ORDER BY e.ts ASC, e.id ASC");
-               $out .= '<table>
+                         WHERE e.sn = '$sn' AND e.hw_type = '$hw' $sql_filt ") or print mysqli_error($conn);
+               $r002 = mysqli_fetch_assoc($q002);
+               $all_rows_cnt = $r002['cnt'];
+
+               if ( $page > ceil($all_rows_cnt / $opts_global_records_per_page) ) { $page = 1; }
+
+               $q1 = mysqli_query($conn, "SELECT  e.id, e.event_code, e.card, e.card_hex, e.ts, e.internal_id, ec.name, ec.severity_color, uk.type, uk.access, uk.user, INET_NTOA(e.src_ip) AS src_ip_norm
+                         FROM `events` e
+                              LEFT JOIN event_codes ec ON ec.id = e.event_code
+                              LEFT JOIN user_keys uk ON uk.key = e.card
+                         WHERE e.sn = '$sn' AND e.hw_type = '$hw' $sql_filt
+                         ORDER BY e.ts ASC, e.id ASC LIMIT ".(($page-1)*$opts_global_records_per_page).", $opts_global_records_per_page") or print mysqli_error($conn);;
+               $out .= get_pager($page, $all_rows_cnt, "admin.php?tab=$tab&sn=$sn&hw_type=$hw&f_code=$f_code&f_key=$f_key&f_time=$f_time&f_user=$f_user&f_event=$f_event&f_ip=$f_ip").' ['.$all_rows_cnt.']<table>
                <tr> <th>iD DB</th> <th>'.$loc_property_name_code.'</th>
                     <th>'.$loc_entity_name_key.'</th>
                     <th>'.$loc_property_name_time.'</th>
                     <th>'.$loc_common_phrase_username.'</th>
                     <th>'.$loc_entity_name_event.'</th>
                     <th>IP</th>
-                    <th>iD int</th> </tr>';
+                    <th>iD int</th> </tr>
+              <form method="GET"> <INPUT type="hidden" name="tab" value="'.$tab.'">
+              <INPUT type="hidden" name="sn" value="'.$sn.'">
+              <INPUT type="hidden" name="hw_type" value="'.$hw.'">
+              <INPUT type="hidden" name="page" value="'.$page.'">
+               <tr> <th></th> <th><input type="text" size="3" name="f_code" value="'.($f_code).'"></th>
+                    <th><input type="text" size="12" name="f_key" value="'.$f_key.'"></th>
+                    <th><input type="text" size="12" name="f_time" value="'.$f_time.'"></th>
+                    <th><input type="text" size="12" name="f_user" value="'.$f_user.'"></th>
+                    <th><input type="text" size="10" name="f_event" value="'.$f_event.'"></th>
+                    <th><input type="text" size="10" name="f_ip" value="'.$f_ip.'"></th>
+                    <th><input type="submit" value=">>>"></th> </tr></FORM>';
                while ( $r = mysqli_fetch_assoc($q1) ) {
                     if ( $r['card'] == '0000,000,00000' and $r['card_hex'] == '000000000000' ) { $key = $key_hex = ''; }
                     elseif ( $mgmt_keys == 1 AND $user_info['allow_manage_keys'] == 1) { $key = $r['card']; $key_hex = $r['card_hex']; }
                     else { $key = $key_hex = '****'; };
                     $out .= "\n".'<tr style="background-color: '.$r['severity_color'].'">
                         <td>'.$r['id']."</td>   <td>".$r['event_code'].'</td>  <td>'.$key.' '.$key_hex.'</td>  <td>'.$r['ts'].'</td>
-                        <td>'.htmlspecialchars($r['user']).'</td> <td>'.htmlspecialchars($r['name']).'</td>        <td>'.$r['src_ip'].'</td>       <td>'.$r['internal_id'].'</td> </tr>';
+                        <td>'.htmlspecialchars($r['user']).'</td> <td>'.htmlspecialchars($r['name']).'</td>        <td>'.$r['src_ip_norm'].'</td>       <td>'.$r['internal_id'].'</td> </tr>';
                }
                $out .= '</table>';
           } else { $out = $loc_common_phrase_not_found; }
@@ -1406,6 +1447,7 @@ function check_pswds (input1, input2) {
                        <tr> <td>'.$loc_property_name_last_activity.'</td> <td>'.$user_info['last_used_ts'].'</td> </tr>
                        <tr> <td>'.$loc_property_name_accessrights.':</td> <td>'.$rights.'</td> </tr>
                        <tr> <td>'.$loc_property_name_last_activity.'/'.$loc_common_phrase_password.'</td> <td>'.$user_info['last_changed_password_ts'].'</td> </tr>
+                       <tr> <td> </td> <td>'.date("Y-m-d H:i:s").'</td> </tr>
                        
                     </table> <input type="submit" value="'.$loc_button_save_changes.'"></form>';
                break;
@@ -1567,9 +1609,9 @@ function check_pswds (input1, input2) {
 
 
 if ($tab !='login' and $tab !='logout' AND isset($_SESSION['user']) AND $_SESSION['user'] != '' AND isset($user_info['user']) AND $user_info['user'] != '') {   # // TOP-MENU
-     
+
      $menu_elements = array ('controllers', 'keys', 'offices', 'logins', 'badkeys', 'proxy_events', 'options', 'converter', 'reports');
-     print "\n".'<div class="div_top_menu">';
+     print "\n".'<div class="div_top_menu">'."\n";
      foreach ($menu_elements as $menu_element) {
           $el_style = '';
           if ( $tab == $menu_element ) { $el_style = 'act'; }

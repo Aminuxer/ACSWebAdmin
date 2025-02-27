@@ -20,6 +20,7 @@
   $loc_opts_allow_autoreg_auto_ip_filt = 'في التسجيل التلقائي لوحدات التحكم ، اربط هذا بـ IP';
   $loc_opts_hardware_z5r_interval = 'الفاصل الزمني للاستقصاء لـ Z5R-Web';
   $loc_opts_global_sysname = 'اسم النظام';
+  $loc_opts_global_records_per_page = 'الصفوف لكل صفحة';
   $loc_opts_email_recovery_from = 'العنوان من لرسائل البريد الإلكتروني لاستعادة كلمة المرور';
   $loc_opts_allow_profile_edit_pswd = 'السماح للمستخدمين بتغيير كلمة المرور الذاتية';
   $loc_opts_allow_profile_edit_iprange = 'السماح للمستخدمين بتغيير IP المسموح به ذاتيًا';

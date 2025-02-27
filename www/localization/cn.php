@@ -20,6 +20,7 @@
   $loc_opts_allow_autoreg_auto_ip_filt = '自动注册控制器时，将其绑定到 IP';
   $loc_opts_hardware_z5r_interval = 'Z5R-Web 的轮询间隔';
   $loc_opts_global_sysname = '系统名称';
+  $loc_opts_global_records_per_page = '每頁行數';
   $loc_opts_email_recovery_from = '密码恢复电子邮件的地址发件人';
   $loc_opts_allow_profile_edit_pswd = '允许用户更改自己的密码';
   $loc_opts_allow_profile_edit_iprange = '允许用户更改自己允许的 IP';

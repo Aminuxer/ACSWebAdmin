@@ -2,7 +2,7 @@
 
 session_start();
 $remote_ip = $_SERVER['REMOTE_ADDR'];
-$opts__int__sys__version = 'v.2022-10-30__001';
+$opts__int__sys__version = 'v.2025-02-27__001';
 $conn = mysqli_connect($db_host, $db_user, $db_pswd, $db_name);
 
 $z5r_reftype = array ('Z5RWEB');
@@ -237,5 +237,26 @@ function get_statistic () {
           </div>';   
           return $out;
 }
+
+function get_pager($cu_page = 1, $num_records, $url) {
+   global $opts_global_records_per_page;
+   if ( ! isset($cu_page) or $cu_page == 0) { $cu_page = 1; };
+   if ( $num_records <= $opts_global_records_per_page) { return ''; }
+   $num_pages = ceil($num_records / $opts_global_records_per_page);
+   $mid = '';
+   if ($cu_page > 0 and $cu_page <= $num_pages ) {
+       if ($cu_page > 1 ) { $mid .= ' <a href="'.$url.'&page=1">1</a> .. '; } else { $mid .= '<B>1</B> .. '; };
+       if ($cu_page == 1 ) { $mid .= ' <a href="'.$url.'&page=2">2</a> '; };
+
+       if ($cu_page > 1 and $cu_page < ($num_pages) and $cu_page != (2) ) { $mid .= '<a href="'.$url.'&page='.($cu_page-1).'">'.($cu_page-1).'</a> '; };       
+       if ($cu_page > 1 and $cu_page < ($num_pages) ) { $mid .= '<B>'.($cu_page).'</B> '; };
+       if ($cu_page > 1 and $cu_page < ($num_pages) and $cu_page != ($num_pages-1) ) { $mid .= '<a href="'.$url.'&page='.($cu_page+1).'">'.($cu_page+1).'</a> '; };
+
+       if ($cu_page == $num_pages ) { $mid .= ' <a href="'.$url.'&page='.($num_pages-1).'">'.($num_pages-1).'</a> '; };       
+       if ($cu_page < $num_pages ) { $mid .= ' .. <a href="'.$url.'&page='.$num_pages.'">'.$num_pages.'</a>'; } else { $mid .= " .. <B>$num_pages</B>"; };
+   };
+   return $mid;
+}
+
 
 ?>

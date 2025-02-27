@@ -20,6 +20,7 @@
   $loc_opts_allow_autoreg_auto_ip_filt = 'At controllers autoregistration bind this to IP';
   $loc_opts_hardware_z5r_interval = 'Polling interval for Z5R-Web';
   $loc_opts_global_sysname = 'System name';
+  $loc_opts_global_records_per_page = 'Records per page';
   $loc_opts_email_recovery_from = 'Address From for password recovery emails';
   $loc_opts_allow_profile_edit_pswd = 'Allow users change self password';
   $loc_opts_allow_profile_edit_iprange = 'Allow users change self allowed IP';
