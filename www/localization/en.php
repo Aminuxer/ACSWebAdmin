@@ -61,7 +61,7 @@
   $loc_susbys_src_ip_bind_help = 'At IP-address change your must edit IP in database or add whitelist subnets.';
   $loc_susbys_src_ip_bind_help2 = 'Any IP can send new-added controller\'s data.';
   $loc_susbys_src_ip_bind_help3 = 'New controllers can be added manually only.';
-  $loc_susbys_controllers_no_data = 'NO active contollers data. At least one controller must send data.';
+  $loc_susbys_controllers_no_data = 'NO active controllers data. At least one controller must send data.';
   $loc_susbys_addkeys_help1 = 'If key wasn\'t found in local database - it will be added.<Br />Your can enroll key only to registered controller (by serial number)';
   $loc_susbys_addkeys_tzhelp1 = 'Example TZ (time regions bitmask)';
   $loc_susbys_delkeys_help1 = 'Delete from database and ALL controllers';

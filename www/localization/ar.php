@@ -20,7 +20,7 @@
   $loc_opts_allow_autoreg_auto_ip_filt = 'في التسجيل التلقائي لوحدات التحكم ، اربط هذا بـ IP';
   $loc_opts_hardware_z5r_interval = 'الفاصل الزمني للاستقصاء لـ Z5R-Web';
   $loc_opts_global_sysname = 'اسم النظام';
-  $loc_opts_global_records_per_page = 'الصفوف لكل صفحة';
+  $loc_opts_global_records_per_page = 'عدد السجلات في الصفحة';
   $loc_opts_email_recovery_from = 'العنوان من لرسائل البريد الإلكتروني لاستعادة كلمة المرور';
   $loc_opts_allow_profile_edit_pswd = 'السماح للمستخدمين بتغيير كلمة المرور الذاتية';
   $loc_opts_allow_profile_edit_iprange = 'السماح للمستخدمين بتغيير IP المسموح به ذاتيًا';
@@ -35,16 +35,17 @@
   $loc_reports_inactive_keys = 'تقرير المفاتيح غير النشطة';
   $loc_reports_alarm_events = 'تقرير أحداث التنبيه';
 
-  $loc_menu_element_controllers = 'تحكم';
-  $loc_menu_element_keys = 'مفاتيح';
-  $loc_menu_element_offices = 'مكاتب';
-  $loc_menu_element_logins = 'عمليات تسجيل الدخول';
-  $loc_menu_element_badkeys = 'مفاتيح تالفة';
-  $loc_menu_element_proxy_events = 'الوكيل';
-  $loc_menu_element_options = 'خيارات';
-  $loc_menu_element_converter = 'محول';
+  /* RTL bidi fix: LRM (U+200E) prefix keeps LTR item order of the top menu on an LTR page; works in old browsers (FF52) too */
+  $loc_menu_element_controllers = '‎تحكم';
+  $loc_menu_element_keys = '‎مفاتيح';
+  $loc_menu_element_offices = '‎مكاتب';
+  $loc_menu_element_logins = '‎عمليات تسجيل الدخول';
+  $loc_menu_element_badkeys = '‎مفاتيح تالفة';
+  $loc_menu_element_proxy_events = '‎الوكيل';
+  $loc_menu_element_options = '‎خيارات';
+  $loc_menu_element_converter = '‎محول';
   $loc_menu_element_profile = 'ملفك الشخصي';
-  $loc_menu_element_reports = 'التقارير';
+  $loc_menu_element_reports = '‎التقارير';
 
   $loc_susbys_greeting = 'أهلا وسهلا !';
   $loc_susbys_email_pswd_recovery = 'استعادة كلمة المرور عبر البريد الإلكتروني';
@@ -61,7 +62,7 @@
   $loc_susbys_src_ip_bind_help = 'عند تغيير عنوان IP ، يجب عليك تحرير IP في قاعدة البيانات أو إضافة شبكات فرعية للقائمة البيضاء.';
   $loc_susbys_src_ip_bind_help2 = 'يمكن لأي IP إرسال بيانات وحدة التحكم المضافة الجديدة.';
   $loc_susbys_src_ip_bind_help3 = 'يمكن إضافة وحدات تحكم جديدة يدويًا فقط.';
-  $loc_susbys_controllers_no_data = 'لا توجد بيانات contollers نشطة. يجب على وحدة تحكم واحدة';
+  $loc_susbys_controllers_no_data = 'لا توجد بيانات من وحدات تحكم نشطة. يجب على وحدة تحكم واحدة على الأقل إرسال بيانات.';
   $loc_susbys_addkeys_help1 = 'إذا لم يتم العثور على المفتاح في قاعدة البيانات المحلية - فسيتم إضافته.<Br />يمكنك تسجيل المفتاح فقط لوحدة التحكم المسجلة (بالرقم التسلسلي)';
   $loc_susbys_addkeys_tzhelp1 = 'مثال TZ (قناع بت للمناطق الزمنية)';
   $loc_susbys_delkeys_help1 = 'حذف من DB و ALL وحدات التحكم';
@@ -130,7 +131,7 @@
   $loc_common_phrase_manage = 'يدير';
   $loc_common_phrase_del = 'حذف';
   $loc_common_phrase_login = 'تسجيل الدخول';
-  $loc_common_phrase_logout = 'خروج';
+  $loc_common_phrase_logout = '‎خروج';
   $loc_common_phrase_send = 'إرسال';
   $loc_common_phrase_username = 'تسجيل الدخول';
   $loc_common_phrase_password = 'كلمة المرور';
